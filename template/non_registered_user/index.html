@@ -1,0 +1,25 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+{% block headblock %}
+<link rel="stylesheet" href="{%static "non_registered_user\style\index.css"%}">
+{% endblock %}
+
+{% block bodyblock %}
+     <div class="Background" >
+     {% include 'non_registered_user/navbar.html' %}
+        
+        <div class="Purpose">
+            <h1 id="purpose">"Best Place To Find Your Best Life Partner"</h1>
+            <a href="{%url 'explore'%}" id="explore_a"><button id="btn-explore">Explore Here</button><a>           
+        </div>
+       
+    </div>
+    <div class="about_us">
+        <h1 id="heading"> About Us</h1>
+        <p id="">It is my pleasure to introduce you to Beta centauri Pvt. Ltd .It is basically a software training and development company in the eastern part of Odisha. Our approach in to the world of software is humble yet confident. We are ever ready to accept challenge and explore possibility with emerging technology to meet customer needs. For us, every piece of work is a mission and each customer is a valuable asset. At the same time, We acknowledge and act for benifits of the others stakeholders apart from customers, We believe that the growth of Beta centauri Pvt.Ltd is only possible to the growth of the three major stake holders that is customer, employee and society . We would like to introduce 5 core values of the company that is Quality, Cost effectiveness, Integrity, Team work and socially responsible. Every Beta centaurian is aware of and committed to maintain these core values throughout the journey of the company. Finally we assure you of the best possible experiences at Beta centauri Pvt.Ltd . As we humbly accept that the growth of company starts with customer satisfaction.We are committed to create opportunities for all. This is our hallmark and this a part of our DNA</p>
+        
+    </div>
+    
+    {% include 'non_registered_user/footer.html' %}
+     
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+
+{% block headblock %}
+<link rel="stylesheet" href="{%static "registered_user\style\explore.css"%}">
+{% endblock %}
+
+{% block bodyblock %}
+    {% include 'registered_user/navbar.html' %}
+    <div class="Mainbody">
+        <div class="filter"><h1>Filter</h1></div>
+        <div class="Result">
+        <form class="searchcandidate">
+            <input type="text" name="search" placeholder="Search.." id="searchbar">
+        </form>
+        </div>
+    </div>
+     {% include 'non_registered_user/footer.html' %}
+{% endblock %}

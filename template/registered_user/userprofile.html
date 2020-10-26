@@ -1,0 +1,18 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{%static "registered_user\style\userprofile.css"%}">
+{% block headblock %}
+{% endblock %}
+
+{% block bodyblock %}
+    {% include 'registered_user/navbar.html' %}
+
+        
+        <div class='data'>{{UserName}}</div>
+        
+        <div class='data'>{{UserEmail}}</div>
+        <div><h3>Hey</h3></div>
+        
+    
+     {% include 'non_registered_user/footer.html' %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+
+{% block headblock %}
+<link rel="stylesheet" href="{%static ""%}">
+{% endblock %}
+
+{% block bodyblock %}
+    {% include 'registered_user/navbar.html' %}
+        <form action="register" method="POST">
+            {% csrf_token %}
+            UserName:<input type="text" name="username"><br>
+            password:<input type="password" name="password"><br>
+            phone: <input type="number" name="phone" id="phn"><br>
+            email: <input type="email" name="emailaddress" id="emailid">
+            <input type="submit" value="submit" id="btn-login1">
+        </form>
+
+        <div>
+            {% for message in  messages%}
+            <h3>{{message}}</h3>
+            {% endfor %}
+        </div>
+     {% include 'non_registered_user/footer.html' %}
+{% endblock %}

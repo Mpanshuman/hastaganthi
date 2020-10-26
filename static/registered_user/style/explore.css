@@ -1,0 +1,40 @@
+.Mainbody{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    height: 78vh;
+    grid-template-areas: "filter Result";
+}
+
+.filter{
+    border-right: 1px solid black;
+    margin-left: 10px;
+}
+
+.Result{
+    margin-left: 30px;
+    margin-right: 10px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+
+#searchbar{
+  width: 50%;
+  margin-left: 15px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('/static/registered_user/images/searchicon.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+#searchbar:focus {
+    width: 97.3%;
+  }

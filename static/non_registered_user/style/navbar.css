@@ -1,0 +1,63 @@
+.navbar{
+    display: flex;
+    padding: 40px 120px;
+}
+
+.nav-link {
+    flex: 1;
+}
+
+.nav-link ul{
+    margin-left: 50px;
+    display: inline;
+}
+
+.nav-link ul li{
+    list-style: none;
+    padding: 8px 25px;
+    display: inline-block;
+    
+}
+
+.nav-link ul a{
+    text-decoration: none;
+    color: #fff;
+    font-size: 13px;
+}
+
+.nav-link ul li::after{
+    content: '';
+    width: 0;
+    height: 2px;
+    background: yellow;
+    display: block;
+    margin: auto;
+    transition: .5s;
+}
+.nav-link ul li:hover::after{
+    width: 100%;
+}
+
+#btn-login,#btn-reg{
+    float: right;
+    background-color: rgb(240, 240, 6);
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+#btn-reg{
+    margin-right: 10px;
+}
+
+#btn-login:hover,
+#btn-reg:hover{
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+    border: 2px solid black;
+    text-decoration: none;
+}
