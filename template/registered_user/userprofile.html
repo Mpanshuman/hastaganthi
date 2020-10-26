@@ -1,18 +1,28 @@
 {% extends 'non_registered_user/base.html' %}
 {% load static %}
-<link rel="stylesheet" href="{%static "registered_user\style\userprofile.css"%}">
+
 {% block headblock %}
+<link rel="stylesheet" href="{%static "registered_user\style\userprofile.css"%}">
 {% endblock %}
 
 {% block bodyblock %}
     {% include 'registered_user/navbar.html' %}
 
+        <div class='Userprofile'>
+            <div class="Profile_pic"></div>
+            <div class="Basic_info">
+                <p><label>Name: </label><label>{{UserName}}</label></p>
+                <p><label>Email: </label><label>{{UserEmail}}</label></p>
+                <p><label>Mobile: </label><label>9087021331</label></p>
+                <p><label>Age: </label><label>28</label></p>
+                <p><label>Date Of Birth: </label><label>DOB</label></p>
+                <p><label>Religion: </label><label>Indian</label></p>
+                <p><label>Gender: </label><label>Male</label></p>
+            </div>
+        </div>
         
-        <div class='data'>{{UserName}}</div>
-        
-        <div class='data'>{{UserEmail}}</div>
-        
-        
-    
+    {% include 'registered_user/addpersonalinfo.html' %}
+    {% include 'registered_user/addparentsinfo.html' %}
+    {% include 'registered_user/preference.html' %}
      {% include 'non_registered_user/footer.html' %}
 {% endblock %}

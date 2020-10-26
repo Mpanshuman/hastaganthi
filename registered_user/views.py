@@ -18,13 +18,14 @@ def login_user(request):
         password = request.POST['loginpassword']
         # register(request)
         user = authenticate(username = username , password = password)
-        msg = str(username) + ' ' + str(password) + ' ' +str(user)
+        # msg = str(username) + ' ' + str(password) + ' ' +str(user)
+        
         if user is not None:
             login(request,user)
-            messages.info(request, 'exists')
+            # messages.info(request, 'exists')
             return redirect('index')
         else:
-            messages.info(request,msg)
+            # messages.info(request,msg)
             return redirect('login')
 
     else:
@@ -33,16 +34,25 @@ def login_user(request):
 
 def registerUser(request):
     if request.method == 'POST':
+
+        # Getting Values from html form by name
         username = request.POST['username']
         password = request.POST['password']
         phone = request.POST['phone']
         email = request.POST['emailaddress']
+
+        # creating user in User model(built-in)
         myuser = User.objects.create_user(username = username, email = email, password = password)
+        # Adding info in custom model
         custdb = User_Test(username = username,password = password, phone= phone)
+
+        ## Like above add Data in Personal,Parents and preference model
+        # preference model not created yet...
+
         myuser.save()
         custdb.save()
-        print('User Added')
-        print('Data Added in db')
+        # print('User Added')
+        # print('Data Added in db')
         return redirect('index')
     else:
         return render(request,'registered_user/registeration_user.html')
@@ -57,7 +67,7 @@ def userprofile(request):
     username = request.user.username
     useremail = request.user.email
     userdata = {'UserName': username,'UserEmail': useremail}
-    print(userdata)
+    # print(userdata)
     return render(request,'registered_user/userprofile.html',userdata)
 
 ## Checking for current user
