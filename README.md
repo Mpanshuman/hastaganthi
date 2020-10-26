@@ -1,3 +1,3 @@
 # hastaganthi
 
-This is a Matrimony Website Developed Using Django
+This is a Matrimony Website Developed Using Django.
