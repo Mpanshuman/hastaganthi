@@ -127,3 +127,9 @@ STATICFILES_DIRS = [
 
 LOGIN_URL='/login'
 LOGIN_REDIRECT_URL=''
+
+AUTH_USER_MODEL = 'registered_user.MyUser'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'registered_user.backends.MyUserBackend',
+]

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth.models import User
+from registered_user.models import MyUser
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
@@ -13,19 +13,17 @@ def search(request):
 
 
 def login_user(request):
+    
     if request.method == 'POST':
         username = request.POST['loginusername']
         password = request.POST['loginpassword']
-        # register(request)
-        user = authenticate(username = username , password = password)
-        # msg = str(username) + ' ' + str(password) + ' ' +str(user)
+        user = authenticate(email = username , password = password)
         
         if user is not None:
             login(request,user)
-            # messages.info(request, 'exists')
             return redirect('index')
+              
         else:
-            # messages.info(request,msg)
             return redirect('login')
 
     else:
@@ -33,6 +31,7 @@ def login_user(request):
 
 
 def registerUser(request):
+    
     if request.method == 'POST':
 
         # Getting Values from html form by name
@@ -41,33 +40,31 @@ def registerUser(request):
         phone = request.POST['phone']
         email = request.POST['emailaddress']
 
-        # creating user in User model(built-in)
-        myuser = User.objects.create_user(username = username, email = email, password = password)
-        # Adding info in custom model
-        custdb = User_Test(username = username,password = password, phone= phone)
+        # creating user in MyUser model(Custom model)
+       
+        myuser = MyUser.objects.create_user( username=username,email = email, password = password, phone=phone)
 
         ## Like above add Data in Personal,Parents and preference model
         # preference model not created yet...
 
         myuser.save()
-        custdb.save()
-        # print('User Added')
-        # print('Data Added in db')
         return redirect('index')
+    
     else:
         return render(request,'registered_user/registeration_user.html')
 
 
 def logout_user(request):
+    
     logout(request)
     return redirect('index')
 
 
 def userprofile(request):
+    
     username = request.user.username
     useremail = request.user.email
     userdata = {'UserName': username,'UserEmail': useremail}
-    # print(userdata)
     return render(request,'registered_user/userprofile.html',userdata)
 
 ## Checking for current user
