@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User, BaseUserManager, AbstractBaseUser
 
 
-
-
 class MyUserManager(BaseUserManager):
     
     def create_user(self, email, phone,username, password=None):
