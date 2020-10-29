@@ -3,6 +3,7 @@ from registered_user.models import MyUser
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
+from registered_user.models import User_Details 
 from django.contrib.auth.decorators import login_required
 from random import randint
 from django.core.mail import EmailMessage
@@ -81,7 +82,10 @@ def userprofile(request):
     
     username = request.user.username
     useremail = request.user.email
-    userdata = {'UserName': username,'UserEmail': useremail}
+    userphone = request.user.phone
+    userdatafromdb = get_userdata(request)
+    userdata = {'UserName': username,'UserEmail': useremail, 'UserData':userdatafromdb,'UserPhone':userphone}
+
     return render(request,'registered_user/userprofile.html',userdata)
 
 ## Checking for current user
@@ -130,4 +134,12 @@ def sent_email(username,email):
     email.fail_silently = False
     email.send()
 
-   
+
+
+def get_userdata(request):
+    try:
+        userdata = User_Details.objects.get(user_id=request.user.id)
+    except User_Details.DoesNotExist:
+        userdata = {'age':'-','dateofbirth':'-','religion':'-','gender':'-'}
+    print('User Data:', userdata)
+    return userdata
