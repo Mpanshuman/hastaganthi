@@ -8,7 +8,10 @@ from random import randint
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.template.loader import render_to_string
+import requests
+from django.http import JsonResponse
 from .models import *
+
 # Create your views here.
 
 @login_required
@@ -51,8 +54,15 @@ def registerUser(request):
 
         ## Like above add Data in Personal,Parents and preference model
         # preference model not created yet...
+
+
+        # {'Status': 'Success', 'Details': 'ddd8b058-da70-48ab-bdcf-e2a5fe50a359'}
+        # otp = otp_gen(phone)
+        # response = send_otp(request,phone=phone,otp=otp)
+        # print(response)
         
         '''sent_mail will work for less secure app(gmail > account setting > less secure app > enabled)'''
+        
         #sent_email(username=username,email=email)
         myuser.save()
         return redirect('index')
@@ -84,12 +94,23 @@ def userprofile(request):
 def otp_gen(phone):
     if phone:
         otp = randint(999,9999)
-        print('OTP GENERATED: ',otp)
+        # print('OTP GENERATED: ',otp)
         return otp
     else:
         return False
 
 
+# {"Status":"Success","Details":"9a34f389-e538-47a6-bf3a-80d097b29504"}
+
+# Send OTP to the Registered Number if Valid
+def send_otp(request,phone,otp):
+    
+    URL = f"https://2factor.in/API/V1/683f7e4e-191c-11eb-b380-0200cd936042/SMS/{phone}/{otp}/HASTA"
+    
+    response = requests.request('GET',URL)
+    data = response.json()
+    
+    return data
 
 '''sent_mail will work for less secure app(gmail > account setting > less secure app > enabled) 
    uncomment the sent_mail method to test
@@ -98,6 +119,7 @@ def otp_gen(phone):
     
 '''
 def sent_email(username,email):
+    
     template = render_to_string('registered_user/email_conformation.html',{'name':username})
     
     email = EmailMessage(
