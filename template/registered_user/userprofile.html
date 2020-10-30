@@ -9,7 +9,12 @@
     {% include 'registered_user/navbar.html' %}
 
         <div class='Userprofile'>
-            <div class="Profile_pic"></div>
+            {% if  UserData.profile_pic.url%}
+            <img class="Profile_pic" src="{{UserData.profile_pic.url}}"></img>
+            {% else %}
+            <img class="Profile_pic" src="/images/defaultpic.png">{{UserData.profile_pic.url}}</img>
+            {% endif %}
+            
             <div class="Basic_info">
                 <p><label>Name: </label><label>{{UserName}}</label></p>
                 <p><label>Email: </label><label>{{UserEmail}}</label></p>

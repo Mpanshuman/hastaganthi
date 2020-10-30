@@ -127,6 +127,11 @@ STATICFILES_DIRS = [
 ]
 
 
+# Media file Management
+
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'static/registered_user/images')
+
 # login required 
 
 LOGIN_URL='/login'

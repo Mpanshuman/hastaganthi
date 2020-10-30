@@ -140,6 +140,6 @@ def get_userdata(request):
     try:
         userdata = User_Details.objects.get(user_id=request.user.id)
     except User_Details.DoesNotExist:
-        userdata = {'age':'-','dateofbirth':'-','religion':'-','gender':'-'}
+        userdata = {'age':'-','dateofbirth':'-','religion':'-','gender':'-','profile_pic':'/images/defaultpic.png'}
     print('User Data:', userdata)
     return userdata
