@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, BaseUserManager, AbstractBaseUser
 import datetime
+from django.conf import settings
 
 class MyUserManager(BaseUserManager):
     
@@ -88,7 +89,7 @@ class User_Details(models.Model):
     phone = models.CharField(max_length=20,null=True)
     email = models.EmailField()
     gender = models.CharField(max_length=20,null=True,choices=GENDER)
-    profile_pic = models.ImageField(null=True,blank=True,default = 'registered_user/images/defaultpic.png')
+    profile_pic = models.ImageField(null=True,blank=True,upload_to='',default = 'defaultpic.png')
     user = models.ForeignKey(MyUser,null=True,on_delete=models.CASCADE)
     
     def __str__(self):
