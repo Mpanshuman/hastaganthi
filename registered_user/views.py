@@ -13,6 +13,7 @@ import requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
+from registered_user.forms import UserForm
 from .models import *
 
 # Create your views here.
@@ -105,8 +106,28 @@ def userprofile(request):
 
 
 def userdetails(request,pk):
-    return HttpResponse('Hello')
+    try:
+        userdata = User_Details.objects.get(user_id = pk)
+    except User_Details.DoesNotExist:
+        userdata = None
+        
+    if userdata is not None:
+        form = UserForm(instance = userdata)
+    else:
+        form = UserForm()
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=userdata)
+        if form.is_valid():
+            userdetailsform = form.save(commit=False)
+            userdetailsform.user = request.user
+            userdetailsform.save()
+            print('Data saves')
+            return redirect('userprofile')
 
+
+ 
+
+    return render(request,'registered_user/personaldetailsform.html',{'form':form})
 
 # OTP GENERATOR
 
