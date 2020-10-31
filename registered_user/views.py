@@ -11,13 +11,22 @@ from django.conf import settings
 from django.template.loader import render_to_string
 import requests
 from django.http import JsonResponse
+from django.db.models import Q
+from django.http import HttpResponse
 from .models import *
 
 # Create your views here.
 
 @login_required
 def search(request):
-    return render(request,'registered_user/explore.html')
+    query = request.GET['search']
+    if len(query) > 50:
+        userdetails = User_Details.objects.none()
+    else:
+        userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
+        Q(LastName__icontains= query))
+    param = {'userdetails':userdetails}    
+    return render(request,'registered_user/explore.html',param)
 
 
 def login_user(request):
@@ -92,6 +101,12 @@ def userprofile(request):
 # def cuuser(request):
 #     current_user = request.user
 #     print('current User is: ',current_user.username)
+
+
+
+def userdetails(request,pk):
+    return HttpResponse('Hello')
+
 
 # OTP GENERATOR
 

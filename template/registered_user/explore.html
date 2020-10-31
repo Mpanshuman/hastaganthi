@@ -10,9 +10,23 @@
     <div class="Mainbody">
         <div class="filter"><h1>Filter</h1></div>
         <div class="Result">
-        <form class="searchcandidate">
+        <form class="searchcandidate" method = 'GET' action = 'search'>
             <input type="text" name="search" placeholder="Search.." id="searchbar">
         </form>
+        <div class= 'searchResult'>
+        {% if userdetails|length < 1 %}
+        <div id='noresult'>
+        Result Not found</div>
+        {% else %}
+
+        {% for userinfo in userdetails %}
+        {{userinfo.FirstName}}<br>
+        {{userinfo.LastName}}<br>
+        {{userinfo.age}}<br>
+        {{userinfo.occupation}}<br>
+        {% endfor %} 
+        {% endif %}
+            </div>
         </div>
     </div>
      {% include 'non_registered_user/footer.html' %}
