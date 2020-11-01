@@ -13,20 +13,19 @@
         <form class="searchcandidate" method = 'GET' action = 'search'>
             <input type="text" name="search" placeholder="Search.." id="searchbar">
         </form>
-        <div class= 'searchResult'>
-        {% if userdetails|length < 1 %}
-        <div id='noresult'>
-        Result Not found</div>
-        {% else %}
-
+        <div class= 'searchResult'>  
+        {% if userdetails %}
         {% for userinfo in userdetails %}
         {{userinfo.FirstName}}<br>
         {{userinfo.LastName}}<br>
         {{userinfo.age}}<br>
         {{userinfo.occupation}}<br>
-        {% endfor %} 
+        {% endfor %}   
+        {% else %}
+        <div id='noresult'>Result Not found</div>
         {% endif %}
-            </div>
+        </div>
+            
         </div>
     </div>
      {% include 'non_registered_user/footer.html' %}

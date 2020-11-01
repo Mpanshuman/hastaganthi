@@ -20,15 +20,26 @@ from .models import *
 
 @login_required
 def search(request):
-    query = request.GET['search']
-    if len(query) > 50:
+    query = request.GET.get('search')
+    
+    if query is None:
         userdetails = User_Details.objects.none()
+    
+    elif query == '':
+
+        userdetails = User_Details.objects.none()
+    
+    elif len(query) > 50:
+
+        userdetails = User_Details.objects.none()
+    
     else:
         userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
         Q(LastName__icontains= query))
+    
     param = {'userdetails':userdetails}    
+    
     return render(request,'registered_user/explore.html',param)
-
 
 def login_user(request):
     
