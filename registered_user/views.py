@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
 from registered_user.forms import UserForm
+from django.core.paginator import Paginator,EmptyPage
 from .models import *
 
 # Create your views here.
@@ -36,8 +37,9 @@ def search(request):
     else:
         userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
         Q(LastName__icontains= query))
-    
-    param = {'userdetails':userdetails,'search':query}    
+        # userdataperpage =manage_page(userdetails)
+    userdataperpage =manage_page(request,userdetails)
+    param = {'userdetails':userdataperpage,'search':query}    
     
     return render(request,'registered_user/explore.html',param)
 
@@ -189,8 +191,15 @@ def get_userdata(request):
     print('User Data:', userdata)
     return userdata
 
-def handle_profile_pic(profilepic):
-    if profilepic is None:
-        profilepic = 'defaultpic.png'
-    print(profilepic)
-    return profilepic
+
+def manage_page(request,searchresult):
+    
+    p = Paginator(searchresult,1)
+    pagenum = request.GET.get('page',1)
+    
+    try:
+        page = p.page(pagenum)
+    except EmptyPage:
+        page = p.page(1)
+    
+    return page

@@ -46,7 +46,17 @@
         </div>
         {% endif %}
         </div>
-            
+            <div id="page">
+    
+                {% if userdetails.has_previous %}
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> prev page </a>
+                {% endif %}
+
+                {% if userdetails.has_next %}
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> next page </a>
+                {% endif %}
+
+            </div>
         </div>
     </div>
 
