@@ -89,7 +89,7 @@ class User_Details(models.Model):
     phone = models.CharField(max_length=20,null=True)
     email = models.EmailField()
     gender = models.CharField(max_length=20,null=True,choices=GENDER)
-    profile_pic = models.ImageField(null=True,blank=True,upload_to='',default = 'defaultpic.png')
+    profile_pic = models.ImageField(null=True,blank=True,upload_to='users/',default = 'defaultpic.png')
     user = models.ForeignKey(MyUser,null=True,on_delete=models.CASCADE)
     
     def __str__(self):

@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block bodyblock %}
-        <form method="POST" >
+        <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn-save">Save</button>

@@ -8,5 +8,5 @@ class MakeForm(ModelForm):
 class UserForm(ModelForm):
     class Meta:
         model = User_Details
-        exclude = ('user',)
+        exclude = ('user','profile_pic')
         fields = '__all__'

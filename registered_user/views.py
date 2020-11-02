@@ -37,7 +37,7 @@ def search(request):
         userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
         Q(LastName__icontains= query))
     
-    param = {'userdetails':userdetails}    
+    param = {'userdetails':userdetails,'search':query}    
     
     return render(request,'registered_user/explore.html',param)
 
@@ -109,10 +109,6 @@ def userprofile(request):
 
     return render(request,'registered_user/userprofile.html',userdata)
 
-## Checking for current user
-# def cuuser(request):
-#     current_user = request.user
-#     print('current User is: ',current_user.username)
 
 
 
@@ -132,7 +128,8 @@ def userdetails(request,pk):
             userdetailsform = form.save(commit=False)
             userdetailsform.user = request.user
             userdetailsform.save()
-            print('Data saves')
+
+            print('profile pic:',userdetailsform.profile_pic)
             return redirect('userprofile')
 
 
@@ -191,3 +188,9 @@ def get_userdata(request):
     
     print('User Data:', userdata)
     return userdata
+
+def handle_profile_pic(profilepic):
+    if profilepic is None:
+        profilepic = 'defaultpic.png'
+    print(profilepic)
+    return profilepic

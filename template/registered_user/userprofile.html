@@ -10,9 +10,23 @@
 
         <div class='Userprofile'>
             {% if  UserData.profile_pic.url%}
-            <img class="Profile_pic" src="{{UserData.profile_pic.url}}">{{UserData.profile_pic.url}}</img>
+            <img class="Profile_pic" src="{{UserData.profile_pic.url}}"></img>
+            <div>
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="myfile">
+            <button type="submit">Upload</button>
+            </form>
+            </div>
             {% else %}
             <img class="Profile_pic" src="/images/defaultpic.png"></img>
+            <div>
+            <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="myfile">
+            <button type="submit">Upload</button>
+            </form>
+            </div>
             {% endif %}
             
             <div class="Basic_info">
