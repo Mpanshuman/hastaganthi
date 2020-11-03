@@ -15,9 +15,9 @@
         </form>
         <div class= 'searchResult'> 
         {% if userdetails %}
-        {% for userinfo in userdetails %}
-        <div class= 'dbresult'> 
-            <div id="userpic"><img src="media/images/default_pic.png" alt="pic"></div>
+        {% for userinfo,userpic in userdetails %}
+        <div class= 'dbresult'>  
+            <div id="userpic"><img src={{userpic}} alt="pic"></div>
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>

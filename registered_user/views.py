@@ -37,8 +37,11 @@ def search(request):
     else:
         userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
         Q(LastName__icontains= query))
-        # userdataperpage =manage_page(userdetails)
-    userdataperpage =manage_page(request,userdetails)
+    
+    imagedata = get_imagedata(userdetails)
+
+    userdataperpage =manage_page(request,list(zip(userdetails,imagedata)))
+    
     param = {'userdetails':userdataperpage,'search':query}    
     
     return render(request,'registered_user/explore.html',param)
@@ -242,3 +245,24 @@ def showimage(request,pk):
     
       
     return render(request, 'registered_user/images_try.html', context)
+
+
+#get image
+def get_imagedata(userdetails):
+
+    userdetails_value =  userdetails.values('user_id')
+    res_lis = []
+    user_list = [uid['user_id'] for uid in userdetails_value ]
+    imgdetails = Image.objects.filter(user_id__in = user_list)
+    imgdetails_values = imgdetails.values()
+    imgdetails_values_id = imgdetails.values('user_id')
+    img_list = [uid['user_id'] for uid in imgdetails_values_id ]
+   
+    for data in user_list:
+
+        if data in img_list:
+            res_lis.append('media/'+str(Image.objects.get(user_id = data).imagefile))
+        else:
+            res_lis.append("media/images/default_pic.png")
+    
+    return res_lis
