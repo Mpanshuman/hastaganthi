@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from registered_user.models import MyUser
+from registered_user.models import MyUser, Image
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
@@ -13,7 +13,7 @@ import requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
-from registered_user.forms import UserForm
+from registered_user.forms import UserForm, ImageForm
 from django.core.paginator import Paginator,EmptyPage
 from .models import *
 
@@ -103,11 +103,16 @@ def logout_user(request):
 
 def userprofile(request):
     
+    try:
+        image_details= Image.objects.get(user_id= request.user.id)
+        print('Image File:',image_details)
+    except Image.DoesNotExist:
+        image_details = None
     username = request.user.username
     useremail = request.user.email
     userphone = request.user.phone
     userdatafromdb = get_userdata(request)
-    userdata = {'UserName': username,'UserEmail': useremail, 'UserData':userdatafromdb,'UserPhone':userphone}
+    userdata = {'UserName': username,'UserEmail': useremail, 'UserData':userdatafromdb,'UserPhone':userphone,'image_details':image_details}
 
     return render(request,'registered_user/userprofile.html',userdata)
 
@@ -131,7 +136,7 @@ def userdetails(request,pk):
             userdetailsform.user = request.user
             userdetailsform.save()
 
-            print('profile pic:',userdetailsform.profile_pic)
+            
             return redirect('userprofile')
 
 
@@ -188,7 +193,7 @@ def get_userdata(request):
     except User_Details.DoesNotExist:
         userdata = {'age':'-','dateofbirth':'-','religion':'-','gender':'-'}
     
-    print('User Data:', userdata)
+    
     return userdata
 
 
@@ -203,3 +208,36 @@ def manage_page(request,searchresult):
         page = p.page(1)
     
     return page
+
+
+
+#for image
+def showimage(request,pk):
+    
+    try:
+        imagefile= Image.objects.get(user_id= pk)   
+    except Image.DoesNotExist:
+        imagefile = None
+        
+
+
+    if imagefile is not None:
+        form = ImageForm(instance = imagefile)
+    else:
+        form = ImageForm()
+    if request.method == 'POST':
+        form= ImageForm(request.POST,request.FILES,instance = imagefile)
+        if form.is_valid():
+            imageviewform = form.save(commit = False)
+            imageviewform.user = request.user
+            imageviewform.save()
+            
+            return redirect('userprofile')
+
+    
+    context= {'imagefile': imagefile,
+              'form': form
+              }
+    
+      
+    return render(request, 'registered_user/images_try.html', context)

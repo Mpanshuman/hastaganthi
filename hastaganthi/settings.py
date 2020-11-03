@@ -65,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -129,9 +130,11 @@ STATICFILES_DIRS = [
 
 # Media file Management
 
-MEDIA_URL = '/images/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'static/registered_user/images')
+# MEDIA_URL = '/images/'
+# MEDIA_ROOT = os.path.join(BASE_DIR,'static/registered_user/images')
 
+MEDIA_URL= "/media/"
+MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
 # login required 
 
 LOGIN_URL='/login'

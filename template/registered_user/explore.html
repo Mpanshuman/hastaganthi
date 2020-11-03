@@ -17,7 +17,7 @@
         {% if userdetails %}
         {% for userinfo in userdetails %}
         <div class= 'dbresult'> 
-            <div id="userpic"><img src="/images/defaultpic.png" alt="pic"></div>
+            <div id="userpic"><img src="media/images/default_pic.png" alt="pic"></div>
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>
@@ -35,7 +35,7 @@
         {% endfor %}   
         {% else %}
         
-        <div id='noresult'><p>Your search - {{search}} - did not match any User.</p>
+        <div id='noresult'><p>Your search  {{search}}  did not match any User.</p>
 
             <p>Suggestions:<br><br>Make sure that all words are spelled correctly.</p>
             <ul>
