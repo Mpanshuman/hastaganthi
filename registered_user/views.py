@@ -215,7 +215,8 @@ def manage_page(request,searchresult):
 def showimage(request,pk):
     
     try:
-        imagefile= Image.objects.get(user_id= pk)   
+        imagefile= Image.objects.get(user_id= pk)
+        
     except Image.DoesNotExist:
         imagefile = None
         
