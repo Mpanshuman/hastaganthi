@@ -16,8 +16,15 @@
         <div class= 'searchResult'> 
         {% if userdetails %}
         {% for userinfo,userpic in userdetails %}
-        <div class= 'dbresult'>  
+        <div class= 'dbresult'>
+            {% if userpic == 'media/' %}
+            <div id="userpic"><img src="media/images/default_pic.png" alt="pic"></div>
+            
+            {% else %}
+            
             <div id="userpic"><img src={{userpic}} alt="pic"></div>
+            {% endif %}  
+            
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>

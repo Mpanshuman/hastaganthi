@@ -40,7 +40,7 @@ def search(request):
     
     imagedata = get_imagedata(userdetails)
 
-    userdataperpage =manage_page(request,list(zip(userdetails,imagedata)))
+    userdataperpage = manage_page(request,list(zip(userdetails,imagedata)))
     
     param = {'userdetails':userdataperpage,'search':query}    
     
@@ -202,7 +202,7 @@ def get_userdata(request):
 
 def manage_page(request,searchresult):
     
-    p = Paginator(searchresult,1)
+    p = Paginator(searchresult,2)
     pagenum = request.GET.get('page',1)
     
     try:
@@ -251,11 +251,16 @@ def showimage(request,pk):
 def get_imagedata(userdetails):
 
     userdetails_value =  userdetails.values('user_id')
+   
     res_lis = []
     user_list = [uid['user_id'] for uid in userdetails_value ]
+    
     imgdetails = Image.objects.filter(user_id__in = user_list)
+   
     imgdetails_values = imgdetails.values()
+    
     imgdetails_values_id = imgdetails.values('user_id')
+    
     img_list = [uid['user_id'] for uid in imgdetails_values_id ]
    
     for data in user_list:
@@ -264,5 +269,5 @@ def get_imagedata(userdetails):
             res_lis.append('media/'+str(Image.objects.get(user_id = data).imagefile))
         else:
             res_lis.append("media/images/default_pic.png")
-    
+
     return res_lis

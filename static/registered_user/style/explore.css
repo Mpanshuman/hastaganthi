@@ -53,7 +53,8 @@
 img{
     height: 100%;
     width: 100%;
-    border-radius: 12px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
 #userpic{
