@@ -47,15 +47,22 @@
         {% endif %}
         </div>
             <div id="page">
-    
+                <div id = "pagenav">
                 {% if userdetails.has_previous %}
-                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> prev page </a>
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> &laquo; </a>
                 {% endif %}
-
+                {% for page in userdetails.paginator.page_range %}
+                {% if userdetails.number == page %}
+                <a class="active" href="{% url 'explore' %}?search={{search}}&page={{page}}"> {{page}} </a>
+                {% else %}
+                <a  href="{% url 'explore' %}?search={{search}}&page={{page}}"> {{page}} </a>
+                {% endif %}
+            
+                {% endfor %}
                 {% if userdetails.has_next %}
-                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> next page </a>
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> &raquo;</a>
                 {% endif %}
-
+                </div>
             </div>
         </div>
     </div>

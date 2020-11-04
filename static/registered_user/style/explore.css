@@ -112,3 +112,32 @@ label{
 #noresult ul{
     margin-bottom: 20px;
 }
+
+#page{
+
+    text-align: center;
+}
+
+#pagenav {
+  display: inline-block;
+}
+#pagenav a.active {
+    background-color: yellow;
+    color: black;
+    border: 1px solid #ddd;
+  }
+  
+
+
+#pagenav a {
+  color:#ddd;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+  margin: 0 4px;
+  background-color: black;
+}
+
+#pagenav  a:hover:not(.active) {background-color:yellow;color: black;}
