@@ -1,0 +1,63 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+
+{% block headblock %}
+<link rel="stylesheet" href="{%static "registered_user\style\explore.css"%}">
+{% endblock %}
+
+{% block bodyblock %}
+    {% include 'registered_user/navbar.html' %}
+    <div class="Mainbody">
+        <div class="filter"><h1>Filter</h1></div>
+        <div class="Result">
+        <form class="searchcandidate" method = 'GET' action = 'search'>
+            <input type="text" name="search" placeholder="Search.." id="searchbar">
+        </form>
+        <div class= 'searchResult'> 
+        {% if userdetails %}
+        {% for userinfo,userpic in userdetails %}
+        <div class= 'dbresult'>  
+            <div id="userpic"><img src={{userpic}} alt="pic"></div>
+            <div id="userdata">
+            <div id="lefthalf">
+                <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>
+               <p><label>Father's Name:</label><span>Fa Name</span></p>
+               <p> <label>Age:</label><span>{{userinfo.age}}</span></p>
+               <p> <label>Gender:</label> <span>Gender</span></p>
+            </div>
+            <div id="righthalf">
+               <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
+                <p><label>Mother's Name:</label><span> Mo Name</span></p>
+               <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
+            </div>
+            </div>
+            </div>
+        {% endfor %}   
+        {% else %}
+        
+        <div id='noresult'><p>Your search  {{search}}  did not match any User.</p>
+
+            <p>Suggestions:<br><br>Make sure that all words are spelled correctly.</p>
+            <ul>
+            <li>Try different User Name.</li>
+            <li>Do not leave search bar blank</li>
+            <li>Try fewer keywords.</li>
+            </ul>
+        </div>
+        {% endif %}
+        </div>
+            <div id="page">
+    
+                {% if userdetails.has_previous %}
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> prev page </a>
+                {% endif %}
+
+                {% if userdetails.has_next %}
+                <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> next page </a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
