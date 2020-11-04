@@ -48,6 +48,7 @@
         </div>
             <div id="page">
                 <div id = "pagenav">
+                {% if userdetails %}
                 {% if userdetails.has_previous %}
                 <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> &laquo; </a>
                 {% endif %}
@@ -61,6 +62,7 @@
                 {% endfor %}
                 {% if userdetails.has_next %}
                 <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> &raquo;</a>
+                {% endif %}
                 {% endif %}
                 </div>
             </div>
