@@ -142,10 +142,25 @@ def userdetails(request,pk):
             
             return redirect('userprofile')
 
-
- 
-
     return render(request,'registered_user/personaldetailsform.html',{'form':form})
+
+
+def showprofile(request,pk):
+    try:
+        userdata = User_Details.objects.get(id = pk)
+        
+    except User_Details.DoesNotExist:
+        userdata = None
+        
+    try:
+        imagedata = Image.objects.get(user_id = userdata.user_id)
+    except Image.DoesNotExist:
+        imagedata = None
+
+
+    # print('userdata:',imagedata.imagefile)
+    userdata = {'userdata': userdata,'image': imagedata,'default':'images/default_pic.png'}
+    return render(request,'registered_user/showprofile.html',userdata)
 
 # OTP GENERATOR
 

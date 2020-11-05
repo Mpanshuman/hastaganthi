@@ -142,3 +142,23 @@ label{
 }
 
 #pagenav  a:hover:not(.active) {background-color:yellow;color: black;}
+
+
+#btn-showprofile{
+    margin-top: -5px;
+    background-color: rgb(240, 240, 6);
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+#btn-showprofile:hover{
+    background-color: black;
+    cursor: pointer;
+    border: 2px solid black;
+    text-decoration: none;
+    color: #fff;
+}

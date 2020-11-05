@@ -31,11 +31,14 @@
                <p><label>Father's Name:</label><span>Fa Name</span></p>
                <p> <label>Age:</label><span>{{userinfo.age}}</span></p>
                <p> <label>Gender:</label> <span>Gender</span></p>
+               
+
             </div>
             <div id="righthalf">
                <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
                 <p><label>Mother's Name:</label><span> Mo Name</span></p>
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
+               <span><a href="{% url 'showprofile' userinfo.id%}"><button id="btn-showprofile">Show Profile</button></a></span>
             </div>
             </div>
             </div>
