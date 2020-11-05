@@ -1,0 +1,32 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+
+{% block headblock %}
+<link rel="stylesheet" href="{%static "registered_user\style\showuserparentsinfo.css"%}">
+{% endblock %}
+
+{% block bodyblock %}
+        <div class="addpersonalinfo">
+    <div class="addpersonalinfonav">
+        <ul>
+            <li><h1>Personal Details</h1></li>
+            <a href="{% url 'userdetails' user.id%}"><li><button id="btn-personalupdate">Contact Details</button></li><a>    
+            </ul>
+    </div>
+</div>
+    <div class="personalDetails">
+        <div class="leftside">
+            <p><label>Salary :</label><span>10,000,000</span></p>
+            <p><label>Caste :</label><span>caste</span></p>
+            <p><label>Address :</label><span>Address</span></p>
+        </div>
+        <div class="rightside">
+        <p><label>Religion :</label><span>Religion</span></p>
+        <p><label>DOB :</label><span>DOB</span></p>
+        <p><label>Age :</label><span>Age</span></p>
+        </div>
+    </div>
+        
+    
+    
+{% endblock %}
