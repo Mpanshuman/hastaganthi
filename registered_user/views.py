@@ -3,7 +3,7 @@ from registered_user.models import MyUser, Image
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
-from registered_user.models import User_Details 
+from registered_user.models import User_Details, Membership
 from django.contrib.auth.decorators import login_required
 from random import randint
 from django.core.mail import EmailMessage
@@ -16,7 +16,8 @@ from django.http import HttpResponse
 from registered_user.forms import UserForm, ImageForm
 from django.core.paginator import Paginator,EmptyPage
 from .models import *
-
+from datetime import date
+from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 @login_required
@@ -41,8 +42,10 @@ def search(request):
     imagedata = get_imagedata(userdetails)
 
     userdataperpage = manage_page(request,list(zip(userdetails,imagedata)))
+
+    membershipstatus = getmembershipstatus(request)
     
-    param = {'userdetails':userdataperpage,'search':query}    
+    param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus}    
     
     return render(request,'registered_user/explore.html',param)
 
@@ -92,6 +95,10 @@ def registerUser(request):
         
         #sent_email(username=username,email=email)
         myuser.save()
+       
+        membership = Membership(user_id = myuser.id)
+        membership.save()
+        
         return redirect('index')
     
     else:
@@ -108,15 +115,21 @@ def userprofile(request):
     
     try:
         image_details= Image.objects.get(user_id= request.user.id)
-        print('Image File:',image_details)
+
     except Image.DoesNotExist:
         image_details = None
+    
+    try:
+        membershipinfo = Membership.objects.get(user_id= request.user.id)
+    except Membership.DoesNotExist:
+        image_details = None
+
     username = request.user.username
     useremail = request.user.email
     userphone = request.user.phone
     userdatafromdb = get_userdata(request)
-    userdata = {'UserName': username,'UserEmail': useremail, 'UserData':userdatafromdb,'UserPhone':userphone,'image_details':image_details}
-
+    userdata = {'UserName': username,'UserEmail': useremail, 'UserData':userdatafromdb,'UserPhone':userphone,'image_details':image_details, 'membership':membershipinfo}
+    
     return render(request,'registered_user/userprofile.html',userdata)
 
 
@@ -156,11 +169,74 @@ def showprofile(request,pk):
         imagedata = Image.objects.get(user_id = userdata.user_id)
     except Image.DoesNotExist:
         imagedata = None
+    
+    membershipstatus = getmembershipstatus(request)
 
 
     # print('userdata:',imagedata.imagefile)
-    userdata = {'userdata': userdata,'image': imagedata,'default':'images/default_pic.png'}
+    userdata = {'userdata': userdata,'image': imagedata,'default':'images/default_pic.png','membership':membershipstatus}
     return render(request,'registered_user/showprofile.html',userdata)
+
+
+
+def chooseMembership(request,pk):
+    if request.method == 'POST':
+        sub_months = request.POST['btn']
+        # print('btn:',months)
+        if sub_months is not None:
+            
+            try:
+                membershipdata = Membership.objects.get(user_id = pk)
+            except Membership.DoesNotExist:
+                membershipdata = None
+            
+            if membershipdata is not None and membershipdata.membership_start_data is None:
+                membershipdata.membership = 'Premium'
+                membershipdata.membership_start_data = date.today()
+                membershipdata.membership_end_data = membershipdata.membership_start_data + relativedelta(months=+int(sub_months))
+                membershipdata.save()
+                return redirect('userprofile')
+            else:
+                membershipdata.membership = 'Premium'
+                membershipdata.membership_end_data = membershipdata.membership_end_data + relativedelta(months=+int(sub_months))
+                membershipdata.save()
+                return redirect('userprofile')
+
+
+
+    return render(request,'registered_user/choosemembership.html')
+
+
+def managemembership(request,pk):
+    try:
+        membershipdata = Membership.objects.get(user_id = pk)
+    except Membership.DoesNotExist:
+        membershipdata = None
+    
+    if request.method == 'POST':
+    
+        membershipchoise = request.POST['btn']
+        print('membershipchoise: ',membershipchoise)
+        if membershipchoise == 'cancel':
+
+            membershipdata.membership = 'Free'
+            membershipdata.membership_start_data = None
+            membershipdata.membership_end_data = None
+            membershipdata.save()
+            return redirect('userprofile')
+
+            print('cancel')
+        else:
+            print('extend')
+    
+    membershipdata_context = {'membership':membershipdata}
+
+
+
+    return render(request,'registered_user/managemembership.html',membershipdata_context)
+
+
+
 
 # OTP GENERATOR
 
@@ -286,3 +362,29 @@ def get_imagedata(userdetails):
             res_lis.append("media/images/default_pic.png")
 
     return res_lis
+
+
+def checkMembership(request):
+    if not request.user.is_anonymous:
+        today = date.today()
+        membershipdata = Membership.objects.get(user_id = request.user.id)
+        if membershipdata.membership != 'Free':
+
+            if today > membershipdata.membership_end_data:
+                membershipdata.membership = 'Free'
+                membershipdata.membership_start_data = None
+                membershipdata.membership_end_data = None
+                membershipdata.save()
+            print('membership:', membershipdata.membership)
+        else:
+            print('free membership')
+
+
+def getmembershipstatus(request):
+    if not request.user.is_anonymous:
+        membershipdata = Membership.objects.get(user_id = request.user.id)
+        print(membershipdata.membership)
+        return membershipdata
+
+
+

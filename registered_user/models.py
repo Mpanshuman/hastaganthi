@@ -120,3 +120,15 @@ class Image(models.Model):
 
     def __str__(self):
         return self.name + ": " + str(self.imagefile)
+
+
+class Membership(models.Model):
+    MEMBERSHIPTYPE = (('Free','Free'),('Premium','Premium'))
+    membership = models.CharField(max_length=20,null=True,default='Free',choices=MEMBERSHIPTYPE,blank=True)
+    membership_start_data = models.DateField(null=True,blank=True)
+    membership_end_data = models.DateField(null=True,blank=True)
+    user = models.ForeignKey(MyUser,null=True,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.email + " : "+self.membership
+    

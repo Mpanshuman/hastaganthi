@@ -55,6 +55,24 @@ img{
     width: 100%;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
+    transform: scale(1.03);
+}
+#blurimg{
+    height: 100%;
+    width: 100%;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    margin: 8px -10px -10px -5px;
+
+}
+
+#userpicblur{
+    width: 25%;
+    border-right: 1px solid black;
+    margin-right: 50px;
+    filter: blur(10px);
+    overflow: hidden;
+    
 }
 
 #userpic{
@@ -62,6 +80,7 @@ img{
     border-right: 1px solid black;
     margin-right: 50px;
 }
+
 p{
     margin-bottom: 15px;
     

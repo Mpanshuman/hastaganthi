@@ -11,7 +11,9 @@ urlpatterns = [
     path('userprofile',views.userprofile,name='userprofile'),
     path('userdetails/<int:pk>',views.userdetails,name='userdetails'),
     path('showimage/<int:pk>',views.showimage,name='showimage'),
-    path('showprofile/<int:pk>',views.showprofile,name='showprofile')
+    path('showprofile/<int:pk>',views.showprofile,name='showprofile'),
+    path('choosemembership/<int:pk>',views.chooseMembership,name='choosemembership'),
+    path('managemembership/<int:pk>',views.managemembership,name='managemembership'),
     
 ]
 

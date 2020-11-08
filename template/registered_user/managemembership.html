@@ -1,0 +1,34 @@
+{% extends 'non_registered_user/base.html' %}
+{% load static %}
+
+{% block headblock %}
+<link rel="stylesheet" href="{%static "registered_user\style\managemembership.css"%}">
+{% endblock %}
+
+{% block bodyblock %}
+    {% include 'registered_user/navbar.html' %}
+        <div class="mainbody">
+   	
+   	<div class="leftside">
+   		<p>Membership :</p>
+   		<p>Subscribed On :</p>
+   		<p>Subscription Ends On :</p>
+   	</div>
+
+   	<div class="rightside">
+   		<p>{{membership.membership}}</p>
+   		<p>{{membership.membership_start_data}}</p>
+   		<p>{{membership.membership_end_data}}</p>
+   	</div>
+
+   </div>
+
+   <div class="btn-choise">
+   <form action="" method="POST">
+           {% csrf_token %}
+   	<a href="#"><button id="btn-cancel" value="cancel" name='btn'>Cancel Subscription</button></a>
+    </form>
+    <a href="{% url 'choosemembership' user.id%}"><button id="btn-extend" value="extend" name='btn'>Extend</button></a>
+   </div>
+     {% include 'non_registered_user/footer.html' %}
+{% endblock %}

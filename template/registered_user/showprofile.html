@@ -8,17 +8,28 @@
 {% block bodyblock %}
     {% include 'registered_user/navbar.html' %}
     <div class='Userprofile'>
-            
+            {% if membership.membership == "Premium" %}
             {% if image.imagefile%}
-            
+           
            
             <img src='{{ MEDIA_URL }}{{ image.imagefile}}' alt="profile pic" width="240" height="180"></img>        
             
             {% else %}
            
              <img class="Profile_pic" src="{{ MEDIA_URL }}{{default}}"></img>
+             {% endif %} 
+             
+             {% else %}
+             
+            {% if image.imagefile%}
+            <img src='{{ MEDIA_URL }}{{ image.imagefile}}' alt="profile pic" width="240" height="180" class="Profile_pic_blur"></img>        
             
-                
+            {% else %}
+           
+             <img class="Profile_pic_blur" src="{{ MEDIA_URL }}{{default}}"></img>
+
+            
+            {% endif %}    
             {% endif %}
             
             <div class="Basic_info">
