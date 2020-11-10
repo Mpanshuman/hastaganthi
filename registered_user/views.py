@@ -3,7 +3,7 @@ from registered_user.models import MyUser, Image
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
-from registered_user.models import User_Details, Membership
+from registered_user.models import User_Details, Membership, Interest
 from django.contrib.auth.decorators import login_required
 from random import randint
 from django.core.mail import EmailMessage
@@ -44,6 +44,11 @@ def search(request):
     userdataperpage = manage_page(request,list(zip(userdetails,imagedata)))
 
     membershipstatus = getmembershipstatus(request)
+
+    useridrt = request.POST.get("interest")
+    
+    if useridrt != None and int(useridrt) != request.user.id:
+        addInterest(request,useridrt)
     
     param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus}    
     
@@ -236,6 +241,20 @@ def managemembership(request,pk):
     return render(request,'registered_user/managemembership.html',membershipdata_context)
 
 
+def userInterest(request):
+    userid = request.GET.get("interest")
+    interesteduserslist = showInterestusers(request)
+    membershipstatus = getmembershipstatus(request)
+    useridrt = request.POST.get("remove")
+    print('userdata:',useridrt)
+    try:
+        if useridrt is not None:
+            removeInterest(request,useridrt)
+            return redirect('interest')
+    except Interest.DoesNotExist:
+        pass
+    interesteduserslist = {'interestedUsers': interesteduserslist,'membership':membershipstatus}
+    return render(request,'registered_user/interest.html', interesteduserslist)
 
 
 # OTP GENERATOR
@@ -387,4 +406,37 @@ def getmembershipstatus(request):
         return membershipdata
 
 
+def addInterest(request,interesteduserid):
+    if interesteduserid is not None:
+        try:
+            interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
+            interest.save()
+            print('data saved')
+        except Interest.DoesNotExist:
+            interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
+            interest.save()
+            print('data saved')
 
+
+def getInterest(request):
+    interest = Interest.objects.filter(user_id = request.user.id)
+    return interest
+
+
+def showInterestusers(request):
+    interestedusers=getInterest(request)
+    interesteduserid = [uid['interesteduser'] for uid in interestedusers.values('interesteduser') ]
+
+    userdetails = User_Details.objects.filter(user_id__in = interesteduserid)
+   
+    image_details = get_imagedata(userdetails)
+
+    userdataperpage = manage_page(request,list(zip(userdetails,image_details)))
+
+    return userdataperpage
+
+def removeInterest(request,interesteduserid):
+    interest = Interest.objects.get(user_id = request.user.id, interesteduser = interesteduserid)
+    print('before delete:',interest)
+    interest.delete()
+    print('after delete:',interest)

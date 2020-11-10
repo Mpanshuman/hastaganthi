@@ -22,10 +22,16 @@
                         <li class="nav">CONTACT US</li>
                     </a>
                    {% if user.is_authenticated %}
-                       <a href="{%url 'userprofile'%}">
-                       <li class='nav'>{{user.username}} Profile</li>
+                       
+                       <a href="{%url 'interest'%}">
+                       <li class='nav'>INTERESTS</li>
                        </a>
-
+                       <a href="{%url 'explore'%}">
+                       <li class='nav'>SEARCH</li>
+                       </a>
+                       <a href="{%url 'userprofile'%}">
+                       <li class='nav'>{{user.username}} PROFILE</li>
+                       </a>
                         <a href="{%url 'logout'%}"><button id="btn-login">Log out</button>
                         </a>
                     {% else %}

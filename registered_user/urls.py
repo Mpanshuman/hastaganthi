@@ -14,6 +14,7 @@ urlpatterns = [
     path('showprofile/<int:pk>',views.showprofile,name='showprofile'),
     path('choosemembership/<int:pk>',views.chooseMembership,name='choosemembership'),
     path('managemembership/<int:pk>',views.managemembership,name='managemembership'),
+    path('interest',views.userInterest,name='interest'),
     
 ]
 

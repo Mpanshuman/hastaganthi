@@ -131,4 +131,12 @@ class Membership(models.Model):
 
     def __str__(self):
         return self.user.email + " : "+self.membership
+
+class Interest(models.Model):
+    interesteduser = models.CharField(max_length=200,null=True,blank=True)
+    user = models.ForeignKey(MyUser,null=True,on_delete=models.CASCADE)
+    def __str__(self):
+        return self.user.email + " Interested in user " +self.interesteduser
+
+
     
