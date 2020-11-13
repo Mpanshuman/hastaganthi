@@ -41,14 +41,20 @@ def search(request):
     
     imagedata = get_imagedata(userdetails)
 
-    userdataperpage = manage_page(request,list(zip(userdetails,imagedata)))
+    interestdata = get_interestdata(request,userdetails)
+
+    userdataperpage = manage_page(request,list(zip(userdetails,imagedata,interestdata)))
 
     membershipstatus = getmembershipstatus(request)
 
     useridrt = request.POST.get("interest")
+    useridel = request.POST.get("remove")
     
     if useridrt != None and int(useridrt) != request.user.id:
         addInterest(request,useridrt)
+    
+    if useridel !=None:
+        removeInterest(request,useridel)
     
     param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus}    
     
@@ -221,7 +227,7 @@ def managemembership(request,pk):
     if request.method == 'POST':
     
         membershipchoise = request.POST['btn']
-        print('membershipchoise: ',membershipchoise)
+       
         if membershipchoise == 'cancel':
 
             membershipdata.membership = 'Free'
@@ -229,10 +235,7 @@ def managemembership(request,pk):
             membershipdata.membership_end_data = None
             membershipdata.save()
             return redirect('userprofile')
-
-            print('cancel')
-        else:
-            print('extend')
+          
     
     membershipdata_context = {'membership':membershipdata}
 
@@ -246,7 +249,7 @@ def userInterest(request):
     interesteduserslist = showInterestusers(request)
     membershipstatus = getmembershipstatus(request)
     useridrt = request.POST.get("remove")
-    print('userdata:',useridrt)
+    
     try:
         if useridrt is not None:
             removeInterest(request,useridrt)
@@ -312,7 +315,7 @@ def get_userdata(request):
 
 def manage_page(request,searchresult):
     
-    p = Paginator(searchresult,2)
+    p = Paginator(searchresult,3)
     pagenum = request.GET.get('page',1)
     
     try:
@@ -394,28 +397,35 @@ def checkMembership(request):
                 membershipdata.membership_start_data = None
                 membershipdata.membership_end_data = None
                 membershipdata.save()
-            print('membership:', membershipdata.membership)
-        else:
-            print('free membership')
+         
+      
 
 
 def getmembershipstatus(request):
     if not request.user.is_anonymous:
         membershipdata = Membership.objects.get(user_id = request.user.id)
-        print(membershipdata.membership)
+       
         return membershipdata
 
 
 def addInterest(request,interesteduserid):
     if interesteduserid is not None:
-        try:
-            interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
-            interest.save()
-            print('data saved')
-        except Interest.DoesNotExist:
-            interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
-            interest.save()
-            print('data saved')
+        interest_users_list = Interest.objects.filter(interesteduser__in = interesteduserid)
+        interest_list = [int(uid['interesteduser']) for uid in interest_users_list.values('interesteduser')]
+        print('add list_:',interest_list)
+        print('add userid:',interesteduserid)
+        if(interesteduserid not in interest_list):
+            print('add userid:',interesteduserid)
+            try:
+                interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
+                interest.save()
+                # sent_interest_mail(request,interesteduserid)
+                print(interesteduserid,' added')
+                
+            except Interest.DoesNotExist:
+                interest = Interest(user_id = request.user.id, interesteduser = interesteduserid)
+                interest.save()
+            
 
 
 def getInterest(request):
@@ -437,6 +447,53 @@ def showInterestusers(request):
 
 def removeInterest(request,interesteduserid):
     interest = Interest.objects.get(user_id = request.user.id, interesteduser = interesteduserid)
-    print('before delete:',interest)
+    
     interest.delete()
-    print('after delete:',interest)
+    
+
+
+def get_interestdata(request,userdetails):
+    userdetails_value =  userdetails.values('user_id')
+   
+    res_lis = []
+    
+    user_list = [uid['user_id'] for uid in userdetails_value ]
+ 
+    
+    interestdetails = Interest.objects.filter(Q(interesteduser__in = user_list) &
+        Q(user_id = request.user.id))
+    
+    interestdetails_values_id = interestdetails.values('interesteduser')
+    
+    interest_list = [int(uid['interesteduser']) for uid in interestdetails_values_id ]
+    
+   
+    for data in user_list:
+
+        
+        if data in interest_list:
+            res_lis.append(data)
+           
+        else:
+            
+            res_lis.append(0)
+       
+    return res_lis
+
+
+def sent_interest_mail(request,interested_userid):
+    print('id:',interested_userid)
+    user_data = User_Details.objects.get(user_id = interested_userid)
+    current_user = User_Details.objects.get(user_id = request.user.id)
+    print('username:', user_data.FirstName)
+    print('email:', user_data.email)
+    print('email:', User_Details.objects.get(user_id = request.user.id))
+    template = render_to_string('registered_user/interest_email.html',{'name':user_data.FirstName,'currentuser':current_user.FirstName})
+    
+    email = EmailMessage(
+    'Someone is simping on you..',
+    template,
+    settings.EMAIL_HOST_USER,
+    [user_data.email],)
+    email.fail_silently = False
+    email.send()

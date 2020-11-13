@@ -3,6 +3,9 @@
 
 {% block headblock %}
 <link rel="stylesheet" href="{%static "registered_user\style\explore.css"%}">
+
+
+
 {% endblock %}
 
 {% block bodyblock %}
@@ -15,7 +18,7 @@
         </form>
         <div class= 'searchResult'> 
         {% if userdetails %}
-        {% for userinfo,userpic in userdetails %}
+        {% for userinfo,userpic,interest in userdetails %}
         <div class= 'dbresult'>
             {% if membership.membership == "Premium" %}
             
@@ -38,6 +41,7 @@
 
             {% endif %}  
             {% if membership.membership == "Premium" %}
+            
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>
@@ -51,11 +55,20 @@
                <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
                 <p><label>Mother's Name:</label><span> Mo Name</span></p>
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
+              
                <span><a href="{% url 'showprofile' userinfo.id%}"><button id="btn-showprofile">Show Profile</button></a></span>
-               <span><a href="#"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest">Interested?</button></a></span></form>
+               
+               
+                {% if interest > 0%}
+               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onclick="reload_auto()">Remove</button></a></span></form>
+                {% else %}
+                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onclick="reload_auto()">Interested?</button></a></span></form>
+                {% endif %}
+            
             </div>
             </div>
             </div>
+            
 
             {% else %}
 
@@ -73,7 +86,11 @@
                 <p><label>Mother's Name:</label><span> Mo Name</span></p>
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
                <span><a href="{% url 'choosemembership' user.id%}"><button id="btn-showprofile">Upgrade to Premium</button></a></span>
-               <span><a href="#"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest">Interested?</button></a></span></form>
+               {% if interest > 0%}
+               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onsubmit="reload_auto()">Remove</button></a></span></form>
+                {% else %}
+                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onsubmit="reload_auto()">Interested?</button></a></span></form>
+                {% endif %}
             </div>
             </div>
             </div>
@@ -115,11 +132,9 @@
             </div>
         </div>
     </div>
-  
+
+    <script src="{% static "registered_user\js\explore.js" %}">
+     
+    </script> 
 {% endblock %}
 
- <script>
-    if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
-      }
-   </script>
