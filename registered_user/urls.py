@@ -15,7 +15,7 @@ urlpatterns = [
     path('choosemembership/<int:pk>',views.chooseMembership,name='choosemembership'),
     path('managemembership/<int:pk>',views.managemembership,name='managemembership'),
     path('interest',views.userInterest,name='interest'),
-    
+    path('deactivate',views.account_deactivate,name='deativateaccount'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

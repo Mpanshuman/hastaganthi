@@ -40,6 +40,8 @@ def search(request):
         Q(LastName__icontains= query))
     
     imagedata = get_imagedata(userdetails)
+    # print('userdetails value:',userdetails.values())
+    userdetails=check_account_status(request,userdetails)
 
     interestdata = get_interestdata(request,userdetails)
 
@@ -497,3 +499,20 @@ def sent_interest_mail(request,interested_userid):
     [user_data.email],)
     email.fail_silently = False
     email.send()
+
+
+def account_deactivate(request):
+    user = request.user
+    user.is_active = False
+    user.save()
+    return redirect('index')
+
+
+
+def check_account_status(request,userdetails):
+    resultusers = userdetails.exclude(user_id = request.user.id)
+    resultusersid = [int(uid['user_id']) for uid in resultusers.values('user_id')]
+    userstatus = MyUser.objects.filter(id__in = resultusersid)
+    activeusers_list = [user.id for user in userstatus if(user.is_active)]
+    activeusers = userdetails.filter(user_id__in = activeusers_list)
+    return activeusers
