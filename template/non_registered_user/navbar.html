@@ -3,6 +3,7 @@
 
 {% block headblock %}
 <link rel="stylesheet" href="{%static "non_registered_user\style\navbar.css"%}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block bodyblock %}
@@ -29,8 +30,14 @@
                        <li class='nav'>INTERESTS</li>
                        </a>
 
-                        <a href="{%url 'logout'%}"><button id="btn-login">Log out</button>
-                        </a>
+                        <li class="dropdown">
+                        <a  class="dropbtn">Manage Account</a>
+                        <div class="dropdown-content">
+                        <a href="{%url 'userprofile'%}">Show Profile</a>
+                        <a href="{%url 'accountsetting'%}">Account Setting</a>
+                        <a href="{%url 'logout'%}">Log out</a>
+                        </div>
+                    </li>  
                     {% else %}
                    <a href="{%url 'login'%}"><button id="btn-login">Log In</button></a>
                    <a href="{%url 'registeruser'%}"><button id="btn-reg">Register</button></a>

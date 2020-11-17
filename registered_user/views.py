@@ -67,6 +67,12 @@ def login_user(request):
     if request.method == 'POST':
         username = request.POST['loginusername']
         password = request.POST['loginpassword']
+        user_status = MyUser.objects.get(Q(email = username)| Q(phone = username))
+        print(user_status)
+        if not user_status.is_active:
+            user_status.is_active = True
+            user_status.save()
+
         user = authenticate(email = username , password = password)
         
         if user is not None:
