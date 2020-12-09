@@ -3,12 +3,13 @@
 
 {% block headblock %}
 <link rel="stylesheet" href="{%static "non_registered_user\style\navbar.css"%}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block bodyblock %}
 <div class="navbar">
-            <div class="nav-link">
+            <div class="nav-link" id="myTopnav">
                 <ul>
                     <a href="{%url 'index'%}">
                         <li class="nav active">HOME</li>
@@ -29,6 +30,10 @@
                        <a href="{%url 'interest'%}">
                        <li class='nav'>INTERESTS</li>
                        </a>
+                       
+                        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    				<i class="fa fa-bars"></i>
+ 					 </a>
 
                         <li class="dropdown">
                         <a  class="dropbtn">Manage Account</a>
@@ -39,10 +44,23 @@
                         </div>
                     </li>  
                     {% else %}
+                    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    				<i class="fa fa-bars"></i>
+ 					 </a>
                    <a href="{%url 'login'%}"><button id="btn-login">Log In</button></a>
                    <a href="{%url 'registeruser'%}"><button id="btn-reg">Register</button></a>
                     {% endif %}
                 </ul>
             </div>
         </div>
+        <script>
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "nav-link") {
+    x.className += " responsive";
+  } else {
+    x.className = "nav-link";
+  }
+}
+</script>
 {% endblock  %}

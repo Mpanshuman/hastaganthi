@@ -18,30 +18,58 @@ from django.core.paginator import Paginator,EmptyPage
 from .models import *
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import urllib.parse
 # Create your views here.
 
 @login_required
 def search(request):
     query = request.GET.get('search')
     
+    minage = request.GET.get('minage')
+    maxage = request.GET.get('maxage')
+    salary = request.GET.get('salary')
+    caste = request.GET.get('caste')
+    religion = request.GET.get('religion')
+    gender = request.GET.getlist('gender')
+    state = request.GET.get('state')
+    filter_btn = request.GET.get('filterbtn')
+    filtered = False
+   
+    filterList = [minage,maxage,salary,caste,religion,state,gender]
+    
+    check_filter = [None]*(len(filterList)-1)
+    check_filter.append([])
+    
     if query is None:
+        
         userdetails = User_Details.objects.none()
+        
     
     elif query == '':
 
         userdetails = User_Details.objects.none()
+ 
     
     elif len(query) > 50:
 
         userdetails = User_Details.objects.none()
+      
+    
     
     else:
+    
         userdetails = User_Details.objects.filter(Q(FirstName__icontains= query) |
         Q(LastName__icontains= query))
     
-    imagedata = get_imagedata(userdetails)
-    # print('userdetails value:',userdetails.values())
+    if filterList != check_filter:
+        userdetails,filtered = filtered_users(filterList,check_filter)
+    
+    print('Userdetails:',userdetails)
+    
     userdetails=check_account_status(request,userdetails)
+
+    imagedata = get_imagedata(userdetails)
+        
 
     interestdata = get_interestdata(request,userdetails)
 
@@ -57,9 +85,21 @@ def search(request):
     
     if useridel !=None:
         removeInterest(request,useridel)
+    param = {}
+    if len(gender) == 0:
+        print('empty list')
+        param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'generlen':len(gender)}    
+    elif len(gender) == 1 and gender[0] != '':
+        print('gender list:',gender)
+        param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender':gender[0],'generlen':len(gender)}
+    elif len(gender) == 2:
+        print('gender list:',gender)
+        param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender1':gender[0],'gender2':gender[1],'generlen':len(gender)}
+    elif len(gender) == 3:
+        print('gender list:',gender) 
+        param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender1':gender[0],'gender2':gender[1],'gender3':gender[2],'generlen':len(gender)}
     
-    param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus}    
-    
+   
     return render(request,'registered_user/explore.html',param)
 
 def login_user(request):
@@ -68,7 +108,7 @@ def login_user(request):
         username = request.POST['loginusername']
         password = request.POST['loginpassword']
         user_status = MyUser.objects.get(Q(email = username)| Q(phone = username))
-        print(user_status)
+    
         if not user_status.is_active:
             user_status.is_active = True
             user_status.save()
@@ -323,7 +363,7 @@ def get_userdata(request):
 
 def manage_page(request,searchresult):
     
-    p = Paginator(searchresult,3)
+    p = Paginator(searchresult,1)
     pagenum = request.GET.get('page',1)
     
     try:
@@ -516,9 +556,123 @@ def account_deactivate(request):
 
 
 def check_account_status(request,userdetails):
+    
+    #exclude the logged in user in the search result
     resultusers = userdetails.exclude(user_id = request.user.id)
+
     resultusersid = [int(uid['user_id']) for uid in resultusers.values('user_id')]
     userstatus = MyUser.objects.filter(id__in = resultusersid)
     activeusers_list = [user.id for user in userstatus if(user.is_active)]
     activeusers = userdetails.filter(user_id__in = activeusers_list)
+    print('active Users:',activeusers)
     return activeusers
+
+
+def filtered_users(filter_user,check_filter):
+   
+    onclick_list = ['']*(len(check_filter)-1)
+    onclick_list .append([])
+    
+    oyeah = User_Details.objects.none()
+    
+    minage = filter_user[0]
+    maxage = filter_user[1]
+    salary = filter_user[2]
+    caste = filter_user[3]
+    religion = filter_user[4]
+    state = filter_user[5]
+    gender = filter_user[6]
+    
+    non_noneValues = []
+    
+    query_dict = {}
+    
+    filedslist = ['minage','maxage','salary','caste','religion','state','gender']
+    
+    non_noneValues = [int(selectedfiledindex) for selectedfiledindex,selectedfiled  in enumerate(filter_user) if selectedfiled != '']
+    filedslist_values = [filedslist[fileds] for fileds in non_noneValues]
+    
+    
+    for query_index in non_noneValues:
+        filterd_user = True
+        if query_index not in [0,1,2,6]:
+            query_dict[filedslist[query_index]] = filter_user[query_index]
+            
+    
+        if query_index == 0:
+            
+            if minage is not None:
+                oyeah = findage(minage=int(minage),userdata= oyeah)
+            
+        
+        if query_index == 1:
+            
+            if maxage is not None:
+                oyeah = findage(maxage=int(maxage),userdata= oyeah)
+            
+        
+        if  query_index == 2:
+            if salary is not None:
+                oyeah = getsalary(oyeah, salary = int(salary))
+
+        if query_index == 6:
+            
+            oyeah = getgender(oyeah,genderlist= gender)
+
+    
+    if filter_user != check_filter or filter_user != onclick_list:
+        
+        if bool(query_dict) == True and oyeah.exists():
+            oyeah = oyeah.filter(**query_dict)
+        elif bool(query_dict) == True and not oyeah.exists():
+            oyeah = User_Details.objects.filter(**query_dict)
+       
+    else:
+        filterd_user = False
+        oyeah = User_Details.objects.none()
+    
+    print('oyeah:',oyeah)
+    return oyeah,filterd_user
+
+
+def findage(userdata,minage = None, maxage = None ):
+    
+    if userdata.exists() and minage is not None:
+        
+        userdata = userdata.filter(age__gt = minage)
+    
+    elif  minage is not None:
+        
+        userdata = User_Details.objects.filter(age__gt = minage)
+    
+    elif userdata.exists() and maxage is not None:
+        
+        userdata = userdata.filter(age__lt = maxage)
+    
+    elif maxage is not None:
+        
+        userdata = User_Details.objects.filter(age__lt = maxage)
+    
+    return userdata
+
+
+
+def getsalary(userdata,salary = None):
+    
+    if salary is not None and userdata.exists():
+        userdata = userdata.filter(salary__gt = salary)
+    elif  salary is not None and not userdata.exists():
+        userdata = User_Details.objects.filter(salary__gt = salary)
+    
+    return userdata
+
+
+
+def getgender( userdata,genderlist = []):
+    
+    if len(genderlist) > 0 and userdata.exists():
+        userdata = userdata.filter(gender__in = genderlist)
+    
+    elif  len(genderlist) > 0 and not userdata.exists():
+        userdata = User_Details.objects.filter(gender__in = genderlist)
+    return userdata

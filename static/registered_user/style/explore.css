@@ -2,13 +2,13 @@
     margin-top: 20px;
     margin-bottom: 10px;
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: 1.5fr 4fr;
     height: 78vh;
     grid-template-areas: "filter Result";
 }
 
 .filter{
-    border-right: 1px solid black;
+
     margin-left: 10px;
 }
 
@@ -202,3 +202,95 @@ label{
     text-decoration: none;
     color: #fff;
 }
+
+.filterbody{
+    border: 2px solid black;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    margin-left: 10px;
+  }
+  
+  .filterform{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .leftsidefilter,.rightsidefilter{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  
+  .leftsidefilter label{
+    margin-bottom: 30px;
+  }
+  
+  .age{
+    margin-bottom: 13px;
+  }
+  
+  #salary,#caste,#religion,#state{
+    margin-bottom: 25px;
+    width: 80%;
+    padding-bottom: 3px;
+    margin-left: 5px;
+  }
+  
+  .gender{
+   
+    margin-bottom: 30px;
+  }
+  
+  .leftsidefilter{
+    margin-right: 10px;
+    margin-left: 10px;
+    width: 30%;
+  }
+  
+  .age input{
+    width: 20%;
+    margin-right: 10px;
+  }
+  
+  #filterbtn{
+    margin-left: 30%;
+  }
+  
+  #filterbtn{
+     background-color: rgb(240, 240, 6);
+        color: black;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.5s;
+    }
+  
+    #filterbtn:hover{
+        background-color: black;
+        cursor: pointer;
+        border: 2px solid black;
+        text-decoration: none;
+        color: #fff;
+    }
+  
+  
+  ::-webkit-input-placeholder { /* Edge */
+    color: grey;
+    font-family: sans-serif;
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: grey;
+    font-family: sans-serif;
+  }
+  
+  ::placeholder {
+    color: grey;
+    font-family: sans-serif;
+  }

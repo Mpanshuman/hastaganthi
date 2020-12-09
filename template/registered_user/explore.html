@@ -6,12 +6,51 @@
 
 
 
+
 {% endblock %}
 
 {% block bodyblock %}
     {% include 'registered_user/navbar.html' %}
     <div class="Mainbody">
-        <div class="filter"><h1>Filter</h1></div>
+        <div class="filter"><h1>Filter</h1>
+        <div class="filterbody">
+		<form class="filterform_main" method="GET" action = 'search' onsubmit = "loaddata()">
+			<div class="filterform">
+				<div class="leftsidefilter">
+					<label>Age : </label>
+					<label>Salary : </label>
+					<label>Caste : </label>
+					<label>Religion : </label>
+					<label>Gender : </label>
+					<label>State : </label>
+				</div>
+
+				<div class="rightsidefilter">
+					<div class="age">
+						<label>Min -</label><input type="number" name="minage" id="minage" class="age"><label>Max -</label><input type="number" name="maxage" id="maxage" class="age">
+					</div>
+
+					<input type="number" name="salary" placeholder="Enter Min Salary" id="salary">
+					<input type="text" name="caste" placeholder="Enter Caste" id="caste">
+					<input type="text" name="religion" placeholder="Enter Religion" id="religion">
+					<div class="gender">
+						<input type="checkbox" name="gender" id="male" value="Male" class="gendercheckbox">
+						<label for="male">Male</label>
+						<input type="checkbox" name="gender" id="female" value="Female" class="gendercheckbox">
+						<label for="female">Female</label>
+						<input type="checkbox" name="gender" id="other" value="Others" class="gendercheckbox">
+						<label for="other">Other</label>
+					</div>
+					<input type="text" name="state" placeholder="Enter State" id="state">
+
+				</div>
+			</div>	
+			<button type="submit" name="filterbtn" id="filterbtn" value = "filteruser" onclick="filtersubmit()">Filter</button>
+		</form>
+		
+	</div>
+
+        </div>
         <div class="Result">
         <form class="searchcandidate" method = 'GET' action = 'search'>
             <input type="text" name="search" placeholder="Search.." id="searchbar">
@@ -112,6 +151,7 @@
         </div>
             <div id="page">
                 <div id = "pagenav">
+                {%if filtered_user is False%}
                 {% if userdetails %}
                 {% if userdetails.has_previous %}
                 <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.previous_page_number}}"> &laquo; </a>
@@ -128,6 +168,132 @@
                 <a href="{% url 'explore' %}?search={{search}}&page={{userdetails.next_page_number}}"> &raquo;</a>
                 {% endif %}
                 {% endif %}
+
+
+
+                {% else%}
+                {% if userdetails %}
+
+                {% comment %} if gender is not selected {% endcomment %}
+                {% if  generlen == 0%}
+                {% if userdetails.has_previous %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&state={{state}}&filterbtn=filteruser&page={{userdetails.previous_page_number}}"> &laquo; </a>
+             
+                {% endif %}
+                
+                {% for page in userdetails.paginator.page_range %}
+                
+                {% if userdetails.number == page %}
+                <a class="active" href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% else %}
+                
+                <a  href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% endif %}
+            
+                
+                {% endfor %}
+                
+                {% if userdetails.has_next %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&state={{state}}&filterbtn=filteruser&page={{userdetails.next_page_number}}"> &raquo;</a>
+                
+                {% endif %}
+                {% endif %}
+
+                {% comment %} if one gender is selected {% endcomment %}
+                {% if  generlen == 1%}
+                {% if userdetails.has_previous %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender}}&state={{state}}&filterbtn=filteruser&page={{userdetails.previous_page_number}}"> &laquo; </a>
+                
+                {% endif %}
+                
+                {% for page in userdetails.paginator.page_range %}
+                
+                {% if userdetails.number == page %}
+                <a class="active" href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% else %}
+                
+                <a  href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% endif %}
+            
+                
+                {% endfor %}
+                
+                {% if userdetails.has_next %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender}}&state={{state}}&filterbtn=filteruser&page={{userdetails.next_page_number}}"> &raquo;</a>
+                
+                {% endif %}
+                {% endif %}
+
+                {% comment %} if two gender are selected {% endcomment %}
+                {% if  generlen == 2%}
+                {% if userdetails.has_previous %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&state={{state}}&filterbtn=filteruser&page={{userdetails.previous_page_number}}"> &laquo; </a>
+              
+                {% endif %}
+                
+                {% for page in userdetails.paginator.page_range %}
+                
+                {% if userdetails.number == page %}
+                <a class="active" href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+               
+                {% else %}
+                
+                <a  href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% endif %}
+            
+                
+                {% endfor %}
+                
+                {% if userdetails.has_next %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&state={{state}}&filterbtn=filteruser&page={{userdetails.next_page_number}}"> &raquo;</a>
+                
+                {% endif %}
+                {% endif %}
+
+                
+                {% comment %} if all genders are selected {% endcomment %}
+                {% if  generlen == 3%}
+                {% if userdetails.has_previous %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&gender={{gender3}}&state={{state}}&filterbtn=filteruser&page={{userdetails.previous_page_number}}"> &laquo; </a>
+               
+                {% endif %}
+                
+                {% for page in userdetails.paginator.page_range %}
+                
+                {% if userdetails.number == page %}
+                <a class="active" href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&gender={{gender3}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+               
+                {% else %}
+                
+                <a  href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&gender={{gender3}}&state={{state}}&filterbtn=filteruser&page={{page}}"> {{page}} </a>
+                
+                {% endif %}
+            
+                
+                {% endfor %}
+                
+                {% if userdetails.has_next %}
+                
+                <a href="{% url 'explore' %}?minage={{miage}}&maxage={{maage}}&salary={{salary}}&caste={{caste}}&religion={{religion}}&gender={{gender1}}&gender={{gender2}}&gender={{gender3}}&state={{state}}&filterbtn=filteruser&page={{userdetails.next_page_number}}"> &raquo;</a>
+                
+                {% endif %}
+                {% endif %}
+
+                {% endif %}  
+                {%endif%} 
+
                 </div>
             </div>
         </div>

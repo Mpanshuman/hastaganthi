@@ -112,3 +112,74 @@
  .dropdown:hover .dropdown-content {
    display: block;
 }
+.nav-link .icon {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .nav-link a:not(:first-child) {display: none;}
+  .nav-link a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-link.responsive {position: relative;}
+  .nav-link.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .nav-link.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .nav-link a:not(:first-child) {display: none;}
+  .nav-link a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .nav-link.responsive {position: relative;}
+  .nav-link.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .nav-link.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
+
+@media screen and (max-width: 900px) {
+  .nav-link a:not(:first-child) {display: none;}
+  .nav-link a.icon {
+    float: right;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .nav-link.responsive {position: relative;}
+  .nav-link.responsive .icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .nav-link.responsive a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+}
+
