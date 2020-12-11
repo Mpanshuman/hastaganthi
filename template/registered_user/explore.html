@@ -99,9 +99,9 @@
                
                
                 {% if interest > 0%}
-               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onclick="reload_auto()">Remove</button></a></span></form>
+               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onclick="false reload_auto()">Remove</button></a></span></form>
                 {% else %}
-                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onclick="reload_auto()">Interested?</button></a></span></form>
+                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onclick="false reload_auto()">Interested?</button></a></span></form>
                 {% endif %}
             
             </div>
@@ -124,11 +124,11 @@
                <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
                 <p><label>Mother's Name:</label><span> Mo Name</span></p>
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
-               <span><a href="{% url 'choosemembership' user.id%}"><button id="btn-showprofile">Upgrade to Premium</button></a></span>
+               <span><a href="{% url 'accountsetting'%}"><button id="btn-showprofile">Upgrade to Premium</button></a></span>
                {% if interest > 0%}
-               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onsubmit="reload_auto()">Remove</button></a></span></form>
+               <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-remove" value={{userinfo.user_id}} name="remove" onclick="reload_auto()">Remove</button></a></span></form>
                 {% else %}
-                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onsubmit="reload_auto()">Interested?</button></a></span></form>
+                <span><a href="{%url 'explore' %}?search={{search}}"><form action="" method="POST" > {% csrf_token %} <button id="btn-interest" value={{userinfo.user_id}} name="interest" onclick="reload_auto()">Interested?</button></a></span></form>
                 {% endif %}
             </div>
             </div>

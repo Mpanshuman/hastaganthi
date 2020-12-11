@@ -15,8 +15,11 @@
   Membership <i class="fa fa-caret-down"></i>
   </button>
   <form id="demoAcc" class="w3-hide w3-white w3-card" method='GET'>
-    <a href="#" class="w3-bar-item w3-button"  id='subscribtion' value='subscribtion'>Subscribe</a>
-    <a href="#" class="w3-bar-item w3-button">Cancel Subscribtion</a>
+    {% if  membership == 'Premium'%}
+    <a href="#" class="w3-bar-item w3-button"  id='subscribtionp' value='subscribtion'>Manage Plan</a>
+    {% else %}
+    <a href="#" class="w3-bar-item w3-button"  id='subscribtionf' value='subscribtion'>Go Premium</a>
+    {% endif %}
   </form>
 
   <div class="w3-dropdown-click">
@@ -74,8 +77,14 @@ $(document).ready(function(){
 // Manage Membership
 {% if user.is_authenticated %}
 $(document).ready(function(){
-  $('#subscribtion').click(function(){
+  $('#subscribtionf').click(function(){
     $('#side_content').load("{%url 'choosemembership' user.id%}")
+  })
+});
+
+$(document).ready(function(){
+  $('#subscribtionp').click(function(){
+    $('#side_content').load("{%url 'managemembership' user.id%}")
   })
 });
 {% endif %}

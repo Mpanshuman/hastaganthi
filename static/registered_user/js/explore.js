@@ -6,6 +6,7 @@
         btn = document.querySelector('#btn-interest')
         btn.innerHTML = "remove";
         console.log('hello')
+        return false
         
     }
     //   function interest() {

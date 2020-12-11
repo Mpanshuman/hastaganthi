@@ -3,10 +3,12 @@
 
 {% block headblock %}
 <link rel="stylesheet" href="{%static "registered_user\style\managemembership.css"%}">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block bodyblock %}
-    {% include 'registered_user/navbar.html' %}
         <div class="mainbody">
    	
    	<div class="leftside">
@@ -26,9 +28,19 @@
    <div class="btn-choise">
    <form action="" method="POST">
            {% csrf_token %}
-   	<a href="#"><button id="btn-cancel" value="cancel" name='btn'>Cancel Subscription</button></a>
+   	<a href="#"><button id="btn-cancel" value="cancel" name='manage-btn'>Cancel Subscription</button></a>
     </form>
-    <a href="{% url 'choosemembership' user.id%}"><button id="btn-extend" value="extend" name='btn'>Extend</button></a>
+    <a href="#"><button id="btn-extend" value="extend" name='manage-btn'>Extend</button></a>
    </div>
-     {% include 'non_registered_user/footer.html' %}
+   <script>
+ if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+      }
+
+	  $(document).ready(function(){
+  $('#btn-extend').click(function(){
+    $('#side_content').load("{%url 'choosemembership' user.id%}")
+  })
+});
+</script>
 {% endblock %}

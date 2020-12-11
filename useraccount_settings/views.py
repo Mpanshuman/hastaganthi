@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from registered_user.models import MyUser
-from registered_user.views import logout_user,chooseMembership,account_deactivate
+from registered_user.views import logout_user,chooseMembership,account_deactivate,getmembershipstatus,managemembership
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
@@ -8,7 +8,7 @@ def accountsetting(request):
     if request.method == 'POST':
         changepassword_value = request.POST.get('changepassbtn')
         deactivate_value = request.POST.get('deactivatebtn')
-        
+        cancel_plan = request.POST.get('manage-btn')
         if(changepassword_value != None):
             changepassword(request)
             return redirect('index')
@@ -17,11 +17,17 @@ def accountsetting(request):
             deactivate_account_check(request)
             return redirect('index')
         
-        else:
+        elif(cancel_plan != None):
+            print('hey')
+            managemembership(request,request.user.id)
             
+        else:   
+            print('else') 
             chooseMembership(request,request.user.id)
-    
-    return render(request,'useraccount_settings/settings.html')
+    membershipdata = str(getmembershipstatus(request)).split(':')
+    print('membership:',membershipdata[1].strip())
+    param = {'membership':membershipdata[1].strip()}
+    return render(request,'useraccount_settings/settings.html',param)
 
 
 def changepasswordtemplate(request):

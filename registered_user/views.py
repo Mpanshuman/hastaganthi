@@ -254,12 +254,12 @@ def chooseMembership(request,pk):
                 membershipdata.membership_start_data = date.today()
                 membershipdata.membership_end_data = membershipdata.membership_start_data + relativedelta(months=+int(sub_months))
                 membershipdata.save()
-                return redirect('userprofile')
+                
             else:
                 membershipdata.membership = 'Premium'
                 membershipdata.membership_end_data = membershipdata.membership_end_data + relativedelta(months=+int(sub_months))
                 membershipdata.save()
-                return redirect('userprofile')
+               
 
 
 
@@ -274,7 +274,7 @@ def managemembership(request,pk):
     
     if request.method == 'POST':
     
-        membershipchoise = request.POST['btn']
+        membershipchoise = request.POST.get('manage-btn')
        
         if membershipchoise == 'cancel':
 
