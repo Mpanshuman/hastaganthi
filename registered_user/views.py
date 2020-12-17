@@ -3,7 +3,7 @@ from registered_user.models import MyUser, Image
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
-from registered_user.models import User_Details, Membership, Interest
+from registered_user.models import User_Details, Membership, Interest, Preference
 from django.contrib.auth.decorators import login_required
 from random import randint
 from django.core.mail import EmailMessage
@@ -13,7 +13,7 @@ import requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
-from registered_user.forms import UserForm, ImageForm
+from registered_user.forms import UserForm, ImageForm, PreferenceForm
 from django.core.paginator import Paginator,EmptyPage
 from .models import *
 from datetime import date
@@ -64,10 +64,9 @@ def search(request):
     if filterList != check_filter:
         userdetails,filtered = filtered_users(filterList,check_filter)
     
-    print('Userdetails:',userdetails)
     
     userdetails=check_account_status(request,userdetails)
-
+    
     imagedata = get_imagedata(userdetails)
         
 
@@ -87,16 +86,12 @@ def search(request):
         removeInterest(request,useridel)
     param = {}
     if len(gender) == 0:
-        print('empty list')
         param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'generlen':len(gender)}    
     elif len(gender) == 1 and gender[0] != '':
-        print('gender list:',gender)
         param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender':gender[0],'generlen':len(gender)}
     elif len(gender) == 2:
-        print('gender list:',gender)
         param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender1':gender[0],'gender2':gender[1],'generlen':len(gender)}
     elif len(gender) == 3:
-        print('gender list:',gender) 
         param = {'userdetails':userdataperpage,'search':query,'membership':membershipstatus,'filtered_user':filtered,'religion':religion,'miage':minage,'maage':maxage,'salary':salary,'caste':caste,'state':state,'gender1':gender[0],'gender2':gender[1],'gender3':gender[2],'generlen':len(gender)}
     
    
@@ -308,6 +303,51 @@ def userInterest(request):
     return render(request,'registered_user/interest.html', interesteduserslist)
 
 
+def preferencedetails(request,pk):
+    try:
+        preference = Preference.objects.get(user_id = pk)
+    except Preference.DoesNotExist:
+        preference = None
+        
+    if preference is not None:
+        form = PreferenceForm(instance = preference)
+    else:
+        form = PreferenceForm()
+    if request.method == 'POST':
+        form = PreferenceForm(request.POST, instance=preference)
+        if form.is_valid():
+            preferenceform = form.save(commit=False)
+            preferenceform.user = request.user
+            preferenceform.save()
+            return redirect('userprofile')
+
+    return render(request,'registered_user/personaldetailsform.html',{'form':form})
+def preferedusers(request):
+    try:
+        preference = Preference.objects.get(user_id = request.user.id)
+    except Preference.DoesNotExist:
+        preference = None
+    
+    if preference is not None:
+        preferedsuser = User_Details.objects.none()
+        preferedsuser = findage(userdata= preferedsuser,minage= int(preference.minAge))
+        preferedsuser = findage(userdata= preferedsuser,maxage= int(preference.maxAge))
+        preferedsuser = getsalary(userdata= preferedsuser, salary= int(preference.minSalary))
+        
+        remainingfieldsvalues = [preference.caste, preference.religion,preference.gender,preference.state]
+        remainingfields = ["caste","religion","gender","state"]
+        remainingfieldsdict = {}
+        non_noneValues = [int(selectedfiledindex) for selectedfiledindex,selectedfiled  in enumerate(remainingfieldsvalues) if selectedfiled != None]
+        filedslist_values = [remainingfields[fileds] for fileds in non_noneValues] 
+        
+        for i in non_noneValues:
+            remainingfieldsdict[remainingfields[i]] = remainingfieldsvalues[i]
+
+        preferedsuser = preferedsuser.filter(**remainingfieldsdict)
+        imagedata = get_imagedata(preferedsuser)
+        return [preferedsuser,imagedata]
+    else:
+        return None
 # OTP GENERATOR
 
 def otp_gen(phone):
@@ -665,7 +705,6 @@ def getsalary(userdata,salary = None):
         userdata = User_Details.objects.filter(salary__gt = salary)
     
     return userdata
-
 
 
 def getgender( userdata,genderlist = []):

@@ -113,6 +113,18 @@ class Parents_Details(models.Model):
     def __str__(self):
         return self.fathers_name
 
+class Preference(models.Model):
+    GENDERCHOISES = (('Male','Male'),('Female','Female'),('Others','Others'))
+    minAge = models.IntegerField(null=True)
+    maxAge = models.IntegerField(null=True)
+    minSalary = models.IntegerField(null=True)
+    caste = models.CharField(max_length=200,null=True,blank=True)
+    religion = models.CharField(max_length=200,null=True,blank=True)
+    gender = models.CharField(max_length=20,null=True,choices=GENDERCHOISES,blank=True)
+    state = models.CharField(max_length=200,null=True,blank=True)
+    user = models.ForeignKey(MyUser,null=True,on_delete=models.CASCADE)        
+    def __str__(self):
+        return self.user.username
 
 # Add model for photos
 

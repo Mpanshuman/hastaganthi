@@ -10,7 +10,7 @@
         <div class="addpreferencenav">
             <ul>
                 <li><h1>Preference</h1></li>
-                <li><button id="btn-preferenceupdate">Update</button></li>        
+                <a href="{% url 'preferencedetails' user.id%}"><li><button id="btn-preferenceupdate">Update</button></li></a>        
                 </ul>
         </div>
         <div class="preferenceDetails">

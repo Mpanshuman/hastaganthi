@@ -28,12 +28,6 @@
                 <p><label>Age: </label><label>{{UserData.age}}</label></p>
                 <p><label>Religion: </label><label>{{UserData.religion}}</label></p>
                 <p><label>Gender: </label><label>{{UserData.gender}}</label></p>
-                {% if  membership.membership == "Free"%}
-                <p><label>Membership: </label><a href="{% url 'choosemembership' user.id%}"><button id="btn-premium">Go Premium</button></a> </p>
-                {% else %}
-                <p><label>Membership: </label><a href="{% url 'managemembership' user.id%}"><button id="btn-premium">Manage Membership</button></a></p>
-                {% endif %}
-                <p><label>Deactivate?: </label><a href="{% url 'deativateaccount'%}"><button id="btn-deactivate">deactivate</button></a></p>
             </div>
             <a href="{% url 'showimage' user.id%}">image page</a>
         </div>

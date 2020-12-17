@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from registered_user.models import Parents_Details, User_Details, Image
+from registered_user.models import Parents_Details, User_Details, Image, Preference
 
 class MakeForm(ModelForm):
     class Meta:
@@ -16,3 +16,9 @@ class ImageForm(ModelForm):
         model= Image
         exclude = ('user',)
         fields= ["name", "imagefile"]
+
+class PreferenceForm(ModelForm):
+    class Meta:
+        model = Preference
+        exclude = ('user',)
+        fields = '__all__'
