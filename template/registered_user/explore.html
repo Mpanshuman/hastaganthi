@@ -57,7 +57,7 @@
         </form>
         <div class= 'searchResult'> 
         {% if userdetails %}
-        {% for userinfo,userpic,interest in userdetails %}
+        {% for userinfo,userpic,interest,parentdata in userdetails %}
         <div class= 'dbresult'>
             {% if membership.membership == "Premium" %}
             
@@ -84,7 +84,8 @@
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>
-               <p><label>Father's Name:</label><span>Fa Name</span></p>
+                {% if parentdata != None %}
+                <p><label>Father's Name:</label><span>{{parentdata.fathers_name}}</span></p>{% endif %}
                <p> <label>Age:</label><span>{{userinfo.age}}</span></p>
                <p> <label>Gender:</label> <span>{{userinfo.gender}}</span></p>
                
@@ -92,7 +93,8 @@
             </div>
             <div id="righthalf">
                <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
-                <p><label>Mother's Name:</label><span> Mo Name</span></p>
+               {% if parentdata != None %}
+                <p><label>Mother's Name:</label><span>{{parentdata.mothers_name}}</span></p>{% endif %}
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
               
                <span><a href="{% url 'showprofile' userinfo.id%}"><button id="btn-showprofile">Show Profile</button></a></span>
@@ -114,7 +116,8 @@
             <div id="userdata">
             <div id="lefthalf">
                 <p><label>First Name:</label><span>{{userinfo.FirstName}}</span></p>
-               <p><label>Father's Name:</label><span>Fa Name</span></p>
+               {% if parentdata != None %}
+                <p><label>Father's Name:</label><span>{{parentdata.fathers_name}}</span></p>{% endif %}
                <p> <label>Age:</label><span>{{userinfo.age}}</span></p>
                <p> <label>Gender:</label> <span>{{userinfo.gender}}</span></p>
                
@@ -122,7 +125,8 @@
             </div>
             <div id="righthalf">
                <p> <label>Last Name:</label> <span>{{userinfo.LastName}}</span></p>
-                <p><label>Mother's Name:</label><span> Mo Name</span></p>
+               {% if parentdata != None %}
+                <p><label>Mother's Name:</label><span>{{parentdata.mothers_name}}</span></p>{% endif %}
                <p> <label>Occupation:</label> <span>{{userinfo.occupation}}</span></p>
                <span><a href="{% url 'accountsetting'%}"><button id="btn-showprofile">Upgrade to Premium</button></a></span>
                {% if interest > 0%}

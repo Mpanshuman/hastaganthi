@@ -73,9 +73,9 @@ def search(request):
 
     interestdata = get_interestdata(request,userdetails)
 
-    get_parentdetails(userdetails)
+    parentdetails = get_parentdetails(userdetails)
 
-    userdataperpage = manage_page(request,list(zip(userdetails,imagedata,interestdata)))
+    userdataperpage = manage_page(request,list(zip(userdetails,imagedata,interestdata,parentdetails)))
 
     membershipstatus = getmembershipstatus(request)
 
@@ -151,6 +151,7 @@ def registerUser(request):
         '''sent_mail will work for less secure app(gmail > account setting > less secure app > enabled)'''
         
         #sent_email(username=username,email=email)
+        check_otp(request)
         myuser.save()
        
         membership = Membership(user_id = myuser.id)
@@ -161,6 +162,9 @@ def registerUser(request):
     else:
         return render(request,'registered_user/registeration_user.html')
 
+
+def check_otp(request):
+    return render(request,'registered_user/otpcheck.html')
 
 def logout_user(request):
     
@@ -547,17 +551,25 @@ def get_imagedata(userdetails):
 
 def get_parentdetails(userdetails):
     userdetails_value =  userdetails.values('user_id')
+    res_lis = []
     user_list = [uid['user_id'] for uid in userdetails_value ]
     try:
         parentsdetails = Parents_Details.objects.filter(user_id__in = user_list)
     except Parents_Details.DoesNotExist:
         parentsdetails = None
-    # imgdetails_values = parentsdetails.values()
+    parentsdetails_values = parentsdetails.values()
     
-    # imgdetails_values_id = imgdetails.values('user_id')
-    
+    parentsdetails_values_id = parentsdetails.values('user_id')
+    parent_list = [uid['user_id'] for uid in parentsdetails_values_id]
+    for data in user_list:
+        if data not in parent_list:
+            res_lis.append(None)
+        else:
+            res_lis.append(Parents_Details.objects.get(user_id = int(data)))
     print('parentdetails:',parentsdetails)
-
+    print('parentsdetails_values_id:',parentsdetails_values_id)
+    print('parentsdetails_list:', res_lis)
+    return res_lis
 def checkMembership(request):
     if not request.user.is_anonymous:
         today = date.today()
