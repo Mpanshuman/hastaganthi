@@ -1,4 +1,3 @@
-
 *{
     margin: 0;
     padding: 0;
@@ -47,5 +46,114 @@
     text-decoration: none;
 }
 
+.Result{
+    margin-left: 30px;
+    margin-right: 10px;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
 
 
+
+.dbresult{
+    display: flex;
+    margin-left:200px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border: 2px solid black;
+    width: 75%;
+    height: 20vh;
+    border-radius: 12px;
+    
+}
+img{
+    height: 100%;
+    width: 100%;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    transform: scale(1.03);
+}
+#blurimg{
+    height: 100%;
+    width: 100%;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    margin: 8px -10px -10px -5px;
+
+}
+
+#userpicblur{
+    width: 25%;
+    border-right: 1px solid black;
+    margin-right: 50px;
+    filter: blur(10px);
+    overflow: hidden;
+    
+}
+
+#userpic{
+    width: 25%;
+    border-right: 1px solid black;
+    margin-right: 50px;
+}
+
+p{
+    margin-bottom: 15px;
+    
+}
+span{
+
+    margin-right: 30px;
+}
+
+label{
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+#userdata{
+    
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+}
+
+#lefthalf{
+    margin-top: 15px;
+    
+    
+}
+#righthalf{
+    margin-top: 15px;
+    margin-left: 20%;
+    
+}
+  
+
+
+/* unvisited link */
+a:link {
+  color: black;
+  text-decoration: none;
+}
+
+/* visited link */
+a:visited {
+  color: black;
+}
+
+/* mouse over link */
+a:hover p{
+  color: black;
+  text-decoration: none;
+}
+
+/* selected link */
+a:active {
+  color: black;
+}
+
+.mySlides {display:none;}
+.w3-button{
+    margin-top: 500px;
+}

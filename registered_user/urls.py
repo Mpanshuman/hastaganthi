@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout',views.logout_user,name = 'logout'),
     path('userprofile',views.userprofile,name='userprofile'),
     path('userdetails/<int:pk>',views.userdetails,name='userdetails'),
+    path('parentdetails/<int:pk>',views.parentdetails,name='parentdetails'),
     path('preferencedetails/<int:pk>',views.preferencedetails,name='preferencedetails'),
     path('showimage/<int:pk>',views.showimage,name='showimage'),
     path('showprofile/<int:pk>',views.showprofile,name='showprofile'),

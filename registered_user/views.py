@@ -3,7 +3,7 @@ from registered_user.models import MyUser, Image
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from non_registered_user.models import User_Test 
-from registered_user.models import User_Details, Membership, Interest, Preference
+from registered_user.models import User_Details, Membership, Interest, Preference, Parents_Details
 from django.contrib.auth.decorators import login_required
 from random import randint
 from django.core.mail import EmailMessage
@@ -13,12 +13,13 @@ import requests
 from django.http import JsonResponse
 from django.db.models import Q
 from django.http import HttpResponse
-from registered_user.forms import UserForm, ImageForm, PreferenceForm
+from registered_user.forms import UserForm, ImageForm, PreferenceForm, ParentForm
 from django.core.paginator import Paginator,EmptyPage
 from .models import *
 from datetime import date
 from dateutil.relativedelta import relativedelta
 import urllib.parse
+from itertools import chain
 # Create your views here.
 
 @login_required
@@ -71,6 +72,8 @@ def search(request):
         
 
     interestdata = get_interestdata(request,userdetails)
+
+    get_parentdetails(userdetails)
 
     userdataperpage = manage_page(request,list(zip(userdetails,imagedata,interestdata)))
 
@@ -211,14 +214,45 @@ def userdetails(request,pk):
 
     return render(request,'registered_user/personaldetailsform.html',{'form':form})
 
+def parentdetails(request,pk):
+    try:
+        userdata = Parents_Details.objects.get(user_id = pk)
+    except Parents_Details.DoesNotExist:
+        userdata = None
+        
+    if userdata is not None:
+        form = ParentForm(instance = userdata)
+    else:
+        form = ParentForm()
+    if request.method == 'POST':
+        form = ParentForm(request.POST, instance=userdata)
+        if form.is_valid():
+            userdetailsform = form.save(commit=False)
+            userdetailsform.user = request.user
+            userdetailsform.save()
+
+            
+            return redirect('userprofile')
+
+    return render(request,'registered_user/parentsdetailsform.html',{'form':form})
+
 
 def showprofile(request,pk):
+    parentdata = None
     try:
         userdata = User_Details.objects.get(id = pk)
         
     except User_Details.DoesNotExist:
         userdata = None
         
+    if userdata is not None:
+        try:
+            parentdata = Parents_Details.objects.get(user_id = userdata.user_id)
+            
+        except Parents_Details.DoesNotExist:
+            parentdata = None
+    print('parentdata:',parentdata)
+     
     try:
         imagedata = Image.objects.get(user_id = userdata.user_id)
     except Image.DoesNotExist:
@@ -228,11 +262,38 @@ def showprofile(request,pk):
 
 
     # print('userdata:',imagedata.imagefile)
-    userdata = {'userdata': userdata,'image': imagedata,'default':'images/default_pic.png','membership':membershipstatus}
+    userdata = {'userdata': userdata,'image': imagedata,'default':'images/default_pic.png','membership':membershipstatus,'parentdata': parentdata}
     return render(request,'registered_user/showprofile.html',userdata)
 
+# def showuserinfo(request,pk):
+#     try:
+#         userdata = User_Details.objects.get(id = pk)
+        
+#     except User_Details.DoesNotExist:
+#         userdata = None
 
+#     # print('userdata:',imagedata.imagefile)
+#     userdata = {'userdata': userdata,'membership':checkMembership(request)}
+#     return render(request,'registered_user/showuserinfo.html',userdata)
 
+# def showparentinfo(request,pk):
+#     parentdata = None
+#     try:
+#         userdata = User_Details.objects.get(id = pk)
+        
+#     except User_Details.DoesNotExist:
+#         userdata = None
+    
+#     if userdata is not None:
+#         try:
+#             parentdata = Parents_Details.objects.get(user_id = userdata.user_id)
+            
+#         except Parents_Details.DoesNotExist:
+#             parentdata = None
+#     print('parentdata:',parentdata)
+#     parentdata = {'parentdata': parentdata}
+#     return render(request,'registered_user/showuserparentsinfo.html',parentdata)
+    
 def chooseMembership(request,pk):
     if request.method == 'POST':
         sub_months = request.POST['btn']
@@ -255,9 +316,6 @@ def chooseMembership(request,pk):
                 membershipdata.membership_end_data = membershipdata.membership_end_data + relativedelta(months=+int(sub_months))
                 membershipdata.save()
                
-
-
-
     return render(request,'registered_user/choosemembership.html')
 
 
@@ -322,6 +380,8 @@ def preferencedetails(request,pk):
             return redirect('userprofile')
 
     return render(request,'registered_user/personaldetailsform.html',{'form':form})
+
+
 def preferedusers(request):
     try:
         preference = Preference.objects.get(user_id = request.user.id)
@@ -333,9 +393,16 @@ def preferedusers(request):
         preferedsuser = findage(userdata= preferedsuser,minage= int(preference.minAge))
         preferedsuser = findage(userdata= preferedsuser,maxage= int(preference.maxAge))
         preferedsuser = getsalary(userdata= preferedsuser, salary= int(preference.minSalary))
+        preferedsuser = preferedsuser.filter(gender = preference.gender)
         
-        remainingfieldsvalues = [preference.caste, preference.religion,preference.gender,preference.state]
-        remainingfields = ["caste","religion","gender","state"]
+        # Sorting users on basis of salary in descending order
+
+        preferedsuserdefault = preferedsuser.order_by("-salary")
+        
+    
+        
+        remainingfieldsvalues = [preference.caste, preference.religion,preference.state]
+        remainingfields = ["caste","religion","state"]
         remainingfieldsdict = {}
         non_noneValues = [int(selectedfiledindex) for selectedfiledindex,selectedfiled  in enumerate(remainingfieldsvalues) if selectedfiled != None]
         filedslist_values = [remainingfields[fileds] for fileds in non_noneValues] 
@@ -343,8 +410,13 @@ def preferedusers(request):
         for i in non_noneValues:
             remainingfieldsdict[remainingfields[i]] = remainingfieldsvalues[i]
 
-        preferedsuser = preferedsuser.filter(**remainingfieldsdict)
+        preferedsuser = preferedsuser.filter(**remainingfieldsdict).order_by("-salary")
+        imagedatadefault = get_imagedata(preferedsuserdefault)
         imagedata = get_imagedata(preferedsuser)
+        imagedata = unique(list(chain(imagedata, imagedatadefault)))
+        preferedsuser = unique(list(chain(preferedsuser, preferedsuserdefault)))
+        
+        
         return [preferedsuser,imagedata]
     else:
         return None
@@ -473,6 +545,18 @@ def get_imagedata(userdetails):
 
     return res_lis
 
+def get_parentdetails(userdetails):
+    userdetails_value =  userdetails.values('user_id')
+    user_list = [uid['user_id'] for uid in userdetails_value ]
+    try:
+        parentsdetails = Parents_Details.objects.filter(user_id__in = user_list)
+    except Parents_Details.DoesNotExist:
+        parentsdetails = None
+    # imgdetails_values = parentsdetails.values()
+    
+    # imgdetails_values_id = imgdetails.values('user_id')
+    
+    print('parentdetails:',parentsdetails)
 
 def checkMembership(request):
     if not request.user.is_anonymous:
@@ -715,3 +799,15 @@ def getgender( userdata,genderlist = []):
     elif  len(genderlist) > 0 and not userdata.exists():
         userdata = User_Details.objects.filter(gender__in = genderlist)
     return userdata
+
+def unique(list1): 
+  
+    # intilize a null list 
+    unique_list = [] 
+      
+    # traverse for all elements 
+    for x in list1: 
+        # check if exists in unique_list or not 
+        if x not in unique_list: 
+            unique_list.append(x)
+    return unique_list
